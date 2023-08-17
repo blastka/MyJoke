@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MyJoke</string>
+    <string name="cache">Cache</string>
+    <string name="get_joke">Get joke</string>
+</resources>
