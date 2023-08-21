@@ -1,6 +1,10 @@
 package com.example.myjoke.data
 
+import android.content.res.Resources
 import android.util.Log
+import androidx.core.content.res.TypedArrayUtils
+import com.example.myjoke.R
+import com.example.myjoke.core.ResourceManager
 import com.example.myjoke.presentation.TextCallback
 import retrofit2.Call
 import retrofit2.Response
@@ -22,7 +26,8 @@ interface JokeCloudDataSource {
 
     class BaseEnqueue(
         retrofit: Retrofit,
-        private val callback: TextCallback
+        private val callback: TextCallback,
+        private val resourceManager: ResourceManager
     ) : JokeCloudDataSource {
         val api = retrofit.create(JokeService::class.java)
 
@@ -30,18 +35,17 @@ interface JokeCloudDataSource {
             api.getAll().enqueue(object : retrofit2.Callback<JokeData> {
                 override fun onResponse(call: Call<JokeData>, response: Response<JokeData>) {
                     if (response.isSuccessful) {
-                        Log.e("MY", "response ${response.body()!!.getJoke()}")
                         callback.setTextSuccess(response.body()!!.getJoke())
                     }
                     else
-                        callback.setTextError("error")
+                        callback.setTextError(resourceManager.getString(R.string.error))
                 }
 
                 override fun onFailure(call: Call<JokeData>, t: Throwable) {
                     if (t is UnknownHostException)
-                        callback.setTextError("нет соединения")
+                        callback.setTextError(resourceManager.getString(R.string.no_connection))
                     else
-                        callback.setTextError("сервис недоступен")
+                        callback.setTextError(resourceManager.getString(R.string.service_unavailable))
                 }
 
             })

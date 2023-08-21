@@ -1,11 +1,13 @@
 package com.example.myjoke.presentation
 
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myjoke.R
+import com.example.myjoke.core.ResourceManager
 import com.example.myjoke.data.JokeCloudDataSource
 import com.example.myjoke.data.RetrofitBuilder
 
@@ -34,7 +36,8 @@ class MainActivity : AppCompatActivity() {
                     jokeText.text = text
                     buttonJoke.isEnabled = true
                 }
-            }
+            },
+            ResourceManager.Base(applicationContext)
         )
 
         buttonJoke.setOnClickListener {
