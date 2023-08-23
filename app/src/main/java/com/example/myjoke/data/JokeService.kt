@@ -5,5 +5,5 @@ import retrofit2.http.GET
 
 interface JokeService {
     @GET("random_joke")
-    fun getAll(): Call<JokeData>
+    fun getAll(): Call<Joke>
 }

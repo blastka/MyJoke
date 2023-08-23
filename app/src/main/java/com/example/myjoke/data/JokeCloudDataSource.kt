@@ -1,53 +1,47 @@
 package com.example.myjoke.data
 
-import android.content.res.Resources
-import android.util.Log
-import androidx.core.content.res.TypedArrayUtils
 import com.example.myjoke.R
 import com.example.myjoke.core.ResourceManager
-import com.example.myjoke.presentation.TextCallback
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.Retrofit
 import java.net.UnknownHostException
 
 interface JokeCloudDataSource {
-    fun getRandomJoke()
+    fun getRandomJoke(callback: JokeCloudCallback)
 
-    class Base(private val retrofit: Retrofit, private val callback: TextCallback) :
+    class Base(private val retrofit: JokeService) :
         JokeCloudDataSource {
-        val api = retrofit.create(JokeService::class.java)
 
-        override fun getRandomJoke() {
-            val result = api.getAll().execute().body()
+        override fun getRandomJoke(callback: JokeCloudCallback) {
+            val result = retrofit.getAll().execute().body()
             result!!.getJoke()
         }
     }
 
     class BaseEnqueue(
-        retrofit: Retrofit,
-        private val callback: TextCallback,
-        private val resourceManager: ResourceManager
+        private val retrofit: JokeService
     ) : JokeCloudDataSource {
-        val api = retrofit.create(JokeService::class.java)
 
-        override fun getRandomJoke() {
-            api.getAll().enqueue(object : retrofit2.Callback<JokeData> {
-                override fun onResponse(call: Call<JokeData>, response: Response<JokeData>) {
+        override fun getRandomJoke(callback: JokeCloudCallback) {
+            retrofit.getAll().enqueue(object : retrofit2.Callback<Joke> {
+                override fun onResponse(call: Call<Joke>, response: Response<Joke>) {
                     if (response.isSuccessful) {
-                        callback.setTextSuccess(response.body()!!.getJoke())
+                        callback.success(JokeCloud.Base(response.body()!!.getJoke()))
                     }
                     else
-                        callback.setTextError(resourceManager.getString(R.string.error))
+                    {
+                        callback.error(JokeCloud.Error())
+                    }
                 }
 
-                override fun onFailure(call: Call<JokeData>, t: Throwable) {
-                    if (t is UnknownHostException)
-                        callback.setTextError(resourceManager.getString(R.string.no_connection))
-                    else
-                        callback.setTextError(resourceManager.getString(R.string.service_unavailable))
+                override fun onFailure(call: Call<Joke>, t: Throwable) {
+                    if (t is UnknownHostException){
+                        callback.error(JokeCloud.NoConnection())
+                    }
+                    else{
+                        callback.error(JokeCloud.ServiceUnavailable())
+                    }
                 }
-
             })
         }
     }

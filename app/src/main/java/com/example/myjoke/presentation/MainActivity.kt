@@ -1,54 +1,50 @@
 package com.example.myjoke.presentation
 
 import android.os.Bundle
-import android.provider.Settings
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myjoke.JokeApp
 import com.example.myjoke.R
-import com.example.myjoke.core.ResourceManager
-import com.example.myjoke.data.JokeCloudDataSource
-import com.example.myjoke.data.RetrofitBuilder
+import com.example.myjoke.data.JokeUi
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var viewModel: JokeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        viewModel = (application as JokeApp).viewModel
         val buttonJoke = findViewById<Button>(R.id.jokeButton)
         val jokeText = findViewById<TextView>(R.id.jokeText)
         val progress = findViewById<ProgressBar>(R.id.progressBar)
+        val image = findViewById<ImageButton>(R.id.imageButton)
 
-        val jokeCloudDataSource = JokeCloudDataSource.BaseEnqueue(
-            RetrofitBuilder().retrofit,
+        val callback =
             object : TextCallback {
-                override fun setTextSuccess(text: String) {
+                override fun setText(text: String) {
                     progress.isIndeterminate = false
                     jokeText.text = text
                     buttonJoke.isEnabled = true
                 }
 
-                override fun setTextError(text: String) {
-                    progress.isIndeterminate = false
-                    jokeText.text = text
-                    buttonJoke.isEnabled = true
+                override fun setIcon(id: JokeUi) {
+                    image.setImageResource(id.getIconId())
                 }
-            },
-            ResourceManager.Base(applicationContext)
-        )
+            }
 
         buttonJoke.setOnClickListener {
             progress.isIndeterminate = true
-            jokeCloudDataSource.getRandomJoke()
+            viewModel.joke(callback)
             buttonJoke.isEnabled = false
         }
     }
 }
 
 interface TextCallback {
-    fun setTextSuccess(text: String)
-    fun setTextError(text: String)
+    fun setText(text: String)
+    fun setIcon(id: JokeUi)
 }
