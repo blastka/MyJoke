@@ -1,7 +1,5 @@
 package com.example.myjoke.data
 
-import com.example.myjoke.R
-import com.example.myjoke.core.ResourceManager
 import retrofit2.Call
 import retrofit2.Response
 import java.net.UnknownHostException
@@ -14,7 +12,7 @@ interface JokeCloudDataSource {
 
         override fun getRandomJoke(callback: JokeCloudCallback) {
             val result = retrofit.getAll().execute().body()
-            result!!.getJoke()
+            //result!!.getJoke()
         }
     }
 
@@ -26,7 +24,7 @@ interface JokeCloudDataSource {
             retrofit.getAll().enqueue(object : retrofit2.Callback<Joke> {
                 override fun onResponse(call: Call<Joke>, response: Response<Joke>) {
                     if (response.isSuccessful) {
-                        callback.success(JokeCloud.Base(response.body()!!.getJoke()))
+                        callback.success(response.body()!!.toData())
                     }
                     else
                     {

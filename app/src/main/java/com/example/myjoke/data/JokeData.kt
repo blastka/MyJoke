@@ -5,19 +5,18 @@ import com.example.myjoke.domain.JokeDomain
 
 interface JokeData {
 
-    fun toDomain():JokeDomain
+    fun toDomain(): JokeDomain
 
-    class Base(private val setup: String, private val punchline: String): JokeData {
+    class Base(private val setup: String, private val punchline: String) : JokeData {
         override fun toDomain(): JokeDomain {
-            TODO("Not yet implemented")
+            return JokeDomain.Success.Base(setup, punchline)
         }
 
     }
 
-    class Fail(text: ErrorType): JokeData{
+    class Fail(private val text: ErrorType) : JokeData {
         override fun toDomain(): JokeDomain {
-            TODO("Not yet implemented")
+            return JokeDomain.Fail.Failed(text)
         }
-
     }
 }

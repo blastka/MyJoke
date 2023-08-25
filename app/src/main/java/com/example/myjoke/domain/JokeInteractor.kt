@@ -8,13 +8,12 @@ class JokeInteractor(private val jokeRepository: JokeRepository): JokeDomainFetc
     override fun joke(vmCallback: VMCallback) {
         jokeRepository.joke(object : RepositoryCallback{
             override fun success(joke: JokeData) {
-                TODO("Not yet implemented")
+                vmCallback.success(joke.toDomain() as JokeDomain.Success)
             }
 
             override fun error(error: JokeData) {
-                TODO("Not yet implemented")
+                vmCallback.error(error.toDomain() as JokeDomain.Fail)
             }
-
         })
     }
 }

@@ -9,6 +9,10 @@ abstract class JokeUi(private val setup: String, private val punchline: String) 
     @DrawableRes
     abstract fun getIconId(): Int
 
+    fun getString(): String {
+        return "$setup\n$punchline"
+    }
+
     class FavoriteJoke(setup: String, punchline: String): JokeUi(setup, punchline){
         override fun getIconId(): Int {
             return R.drawable.ic_baseline_favorite_24
@@ -21,7 +25,7 @@ abstract class JokeUi(private val setup: String, private val punchline: String) 
         }
     }
 
-    class FailedJoke(setup: String, punchline: String): JokeUi(setup, punchline){
+    class FailedJoke(text: String): JokeUi(text, ""){
         override fun getIconId(): Int {
             return 0
         }

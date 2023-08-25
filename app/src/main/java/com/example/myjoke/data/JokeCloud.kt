@@ -33,8 +33,6 @@ interface JokeCloud {
     class ServiceUnavailable() : AbstractFail() {
         override val type: ErrorType = ErrorType.SERVICE_UNAVAILABLE
     }
-
-
 }
 
 enum class ErrorType {
