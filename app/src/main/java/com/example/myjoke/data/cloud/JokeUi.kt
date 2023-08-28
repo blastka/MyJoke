@@ -1,16 +1,24 @@
-package com.example.myjoke.data
+package com.example.myjoke.data.cloud
 
 import androidx.annotation.DrawableRes
 import com.example.myjoke.R
+import com.example.myjoke.presentation.ViewModelCallback
 
 
 abstract class JokeUi(private val setup: String, private val punchline: String) {
 
     @DrawableRes
-    abstract fun getIconId(): Int
+    protected abstract fun getIconId(): Int
 
-    fun getString(): String {
+    protected fun getString(): String {
         return "$setup\n$punchline"
+    }
+
+    fun map(callback: ViewModelCallback){
+        return callback.run {
+            setText(getString())
+            setIcon(getIconId())
+        }
     }
 
     class FavoriteJoke(setup: String, punchline: String): JokeUi(setup, punchline){

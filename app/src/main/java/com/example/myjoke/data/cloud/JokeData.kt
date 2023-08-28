@@ -1,4 +1,4 @@
-package com.example.myjoke.data
+package com.example.myjoke.data.cloud
 
 import com.example.myjoke.domain.JokeDomain
 

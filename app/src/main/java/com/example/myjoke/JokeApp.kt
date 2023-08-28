@@ -2,7 +2,8 @@ package com.example.myjoke
 
 import android.app.Application
 import com.example.myjoke.core.ResourceManager
-import com.example.myjoke.data.*
+import com.example.myjoke.data.cache.JokeCacheDataSource
+import com.example.myjoke.data.cloud.*
 import com.example.myjoke.domain.DomainExceptionHandler
 import com.example.myjoke.domain.JokeInteractor
 import com.example.myjoke.presentation.JokeViewModel

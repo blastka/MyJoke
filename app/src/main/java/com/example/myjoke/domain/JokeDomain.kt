@@ -1,7 +1,7 @@
 package com.example.myjoke.domain
 
-import com.example.myjoke.data.ErrorType
-import com.example.myjoke.data.JokeUi
+import com.example.myjoke.data.cloud.ErrorType
+import com.example.myjoke.data.cloud.JokeUi
 
 interface JokeDomain {
 

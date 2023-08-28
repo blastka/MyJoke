@@ -1,4 +1,4 @@
-package com.example.myjoke.data
+package com.example.myjoke.data.cloud
 
 import com.google.gson.Gson
 import retrofit2.Retrofit

@@ -1,7 +1,7 @@
 package com.example.myjoke.domain
 
 import com.example.myjoke.core.ResourceManager
-import com.example.myjoke.data.ErrorType
+import com.example.myjoke.data.cloud.ErrorType
 
 interface DomainExceptionHandler {
 

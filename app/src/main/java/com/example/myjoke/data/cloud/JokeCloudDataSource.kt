@@ -1,4 +1,4 @@
-package com.example.myjoke.data
+package com.example.myjoke.data.cloud
 
 import retrofit2.Call
 import retrofit2.Response

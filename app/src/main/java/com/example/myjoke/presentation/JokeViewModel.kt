@@ -5,29 +5,51 @@ import com.example.myjoke.domain.DomainExceptionHandler
 import com.example.myjoke.domain.JokeDomain
 import com.example.myjoke.domain.JokeInteractor
 
-class JokeViewModel(private val interactor: JokeInteractor,
-private val handler: DomainExceptionHandler) : ViewModel(), JokeFetcher {
+class JokeViewModel(
+    private val interactor: JokeInteractor,
+    private val handler: DomainExceptionHandler
+) : ViewModel(), JokeFetcher, FavoriteChooser, Init {
 
-    override fun joke(callback: TextCallback) {
-        interactor.joke(object : VMCallback {
-            override fun success(joke: JokeDomain.Success) {
-                callback.setText(joke.toUi().getString())
-                callback.setIcon(joke.toUi())
+    lateinit var viewModelCallback: ViewModelCallback
+
+    override fun joke() {
+        interactor.joke()
+    }
+
+    override fun chooseFavorites(state: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun init(viewModelCallback: ViewModelCallback) {
+        this.viewModelCallback = viewModelCallback
+        interactor.init(object : InteractorCallback {
+            override fun success(jokeDomain: JokeDomain.Success) {
+                val jokeUi = jokeDomain.toUi()
+                jokeUi.map(viewModelCallback)
             }
 
-            override fun error(error: JokeDomain.Fail) {
-                callback.setText(error.toUi(handler).getString())
-                callback.setIcon(error.toUi(handler))
+            override fun error(jokeDomain: JokeDomain.Fail) {
+                val jokeUi = jokeDomain.toUi(handler)
+                jokeUi.map(viewModelCallback)
             }
+
         })
     }
 }
 
 interface JokeFetcher {
-    fun joke(callback: TextCallback)
+    fun joke()
 }
 
-interface VMCallback {
-    fun success(joke: JokeDomain.Success)
-    fun error(error: JokeDomain.Fail)
+interface FavoriteChooser {
+    fun chooseFavorites(state: Boolean)
+}
+
+interface Init {
+    fun init(viewModelCallback: ViewModelCallback)
+}
+
+interface InteractorCallback {
+    fun success(jokeDomain: JokeDomain.Success)
+    fun error(jokeDomain: JokeDomain.Fail)
 }

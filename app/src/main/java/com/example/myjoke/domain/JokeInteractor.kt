@@ -1,25 +1,36 @@
 package com.example.myjoke.domain
 
-import com.example.myjoke.data.JokeData
-import com.example.myjoke.data.JokeRepository
-import com.example.myjoke.presentation.VMCallback
+import com.example.myjoke.data.cloud.JokeData
+import com.example.myjoke.data.cloud.JokeRepository
+import com.example.myjoke.presentation.InteractorCallback
 
-class JokeInteractor(private val jokeRepository: JokeRepository): JokeDomainFetcher {
-    override fun joke(vmCallback: VMCallback) {
+class JokeInteractor(private val jokeRepository: JokeRepository): JokeDomainFetcher, Init {
+
+    lateinit var interactorCallback: InteractorCallback
+
+    override fun joke() {
         jokeRepository.joke(object : RepositoryCallback{
             override fun success(joke: JokeData) {
-                vmCallback.success(joke.toDomain() as JokeDomain.Success)
+                interactorCallback.success(joke.toDomain() as JokeDomain.Success)
             }
 
             override fun error(error: JokeData) {
-                vmCallback.error(error.toDomain() as JokeDomain.Fail)
+                interactorCallback.error(error.toDomain() as JokeDomain.Fail)
             }
         })
     }
+
+    override fun init(interactorCallback: InteractorCallback) {
+        this.interactorCallback = interactorCallback
+    }
+}
+
+interface Init{
+    fun init(interactorCallback: InteractorCallback)
 }
 
 interface JokeDomainFetcher{
-    fun joke(vmCallback: VMCallback)
+    fun joke()
 }
 
 interface RepositoryCallback{
