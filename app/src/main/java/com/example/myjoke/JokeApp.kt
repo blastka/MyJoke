@@ -7,6 +7,7 @@ import com.example.myjoke.data.cloud.*
 import com.example.myjoke.domain.DomainExceptionHandler
 import com.example.myjoke.domain.JokeInteractor
 import com.example.myjoke.presentation.JokeViewModel
+import io.realm.Realm
 
 class JokeApp : Application() {
 
@@ -18,7 +19,7 @@ class JokeApp : Application() {
         viewModel = JokeViewModel(
             JokeInteractor(
                 JokeRepository(
-                    JokeCacheDataSource.Base(),
+                    JokeCacheDataSource.Base(Realm.getDefaultInstance()),
                     JokeCloudDataSource.BaseEnqueue(retrofitBuilder.create(JokeService::class.java))
                 )
             ),
