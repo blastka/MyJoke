@@ -18,7 +18,7 @@ class JokeApp : Application() {
         viewModel = JokeViewModel(
             JokeInteractor(
                 JokeRepository(
-                    JokeCacheDataSource(),
+                    JokeCacheDataSource.Base(),
                     JokeCloudDataSource.BaseEnqueue(retrofitBuilder.create(JokeService::class.java))
                 )
             ),

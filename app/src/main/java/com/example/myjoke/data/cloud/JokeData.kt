@@ -1,5 +1,6 @@
 package com.example.myjoke.data.cloud
 
+import com.example.myjoke.data.cache.ErrorTypeCache
 import com.example.myjoke.domain.JokeDomain
 
 
@@ -17,6 +18,12 @@ interface JokeData {
     class Fail(private val text: ErrorType) : JokeData {
         override fun toDomain(): JokeDomain {
             return JokeDomain.Fail.Failed(text)
+        }
+    }
+
+    class NoCached(private val typeCache: ErrorTypeCache) : JokeData {
+        override fun toDomain(): JokeDomain {
+            return JokeDomain.Fail.NoCached(typeCache)
         }
     }
 }

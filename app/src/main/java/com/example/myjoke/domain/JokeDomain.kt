@@ -1,5 +1,6 @@
 package com.example.myjoke.domain
 
+import com.example.myjoke.data.cache.ErrorTypeCache
 import com.example.myjoke.data.cloud.ErrorType
 import com.example.myjoke.data.cloud.JokeUi
 
@@ -26,5 +27,12 @@ interface JokeDomain {
                 return JokeUi.FailedJoke(handler.handle(text))
             }
         }
+
+        class NoCached(private val text: ErrorTypeCache) : Fail {
+            override fun toUi(handler: DomainExceptionHandler): JokeUi {
+                return JokeUi.FailedJoke(handler.handle(text))
+            }
+        }
+
     }
 }

@@ -21,8 +21,13 @@ class MainActivity : AppCompatActivity() {
         val buttonJoke = findViewById<Button>(R.id.jokeButton)
         val jokeText = findViewById<TextView>(R.id.jokeText)
         val progress = findViewById<ProgressBar>(R.id.progressBar)
-        val image = findViewById<ImageButton>(R.id.imageButton)
+        val imageButton = findViewById<ImageButton>(R.id.imageButton)
         val checkBox = findViewById<CheckBox>(R.id.checkBox)
+
+
+        imageButton.setOnClickListener {
+            //viewModel.changeJokeStatus()
+        }
 
         val callback =
             object : ViewModelCallback {
@@ -33,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun setIcon(id: Int) {
-                    image.setImageResource(id)
+                    imageButton.setImageResource(id)
                 }
             }
 
@@ -46,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         checkBox.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.chooseFavorites(isChecked)
+            viewModel.changeJokeStatus(isChecked)
         }
     }
 }

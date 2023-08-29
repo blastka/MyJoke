@@ -31,6 +31,12 @@ interface DomainException {
         }
     }
 
+    class NoCached(resourceManager: ResourceManager): Abstract(resourceManager){
+        override fun getMessageResId(): Int {
+            return R.string.no_cached
+        }
+    }
+
     class Unknown(resourceManager: ResourceManager): Abstract(resourceManager){
         override fun getMessageResId(): Int {
             return R.string.unknown

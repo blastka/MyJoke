@@ -7,4 +7,5 @@
     <string name="cache">кэш</string>
     <string name="get_joke">Получить шутку</string>
     <string name="unknown">Неизвестно</string>
+    <string name="no_cached">Не сохранена</string>
 </resources>

@@ -24,7 +24,7 @@ interface JokeCloudDataSource {
             retrofit.getAll().enqueue(object : retrofit2.Callback<Joke> {
                 override fun onResponse(call: Call<Joke>, response: Response<Joke>) {
                     if (response.isSuccessful) {
-                        callback.success(response.body()!!.toData())
+                        callback.success(response.body()!!.toJokeCloud())
                     }
                     else
                     {
@@ -43,4 +43,9 @@ interface JokeCloudDataSource {
             })
         }
     }
+}
+
+interface JokeCloudCallback{
+    fun success(joke: JokeCloud)
+    fun error(error: JokeCloud)
 }
