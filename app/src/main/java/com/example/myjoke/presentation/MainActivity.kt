@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
 
         imageButton.setOnClickListener {
-            //viewModel.changeJokeStatus()
+            viewModel.changeStateFavorites()
         }
 
         val callback =

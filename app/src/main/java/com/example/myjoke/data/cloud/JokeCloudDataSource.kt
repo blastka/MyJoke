@@ -28,16 +28,16 @@ interface JokeCloudDataSource {
                     }
                     else
                     {
-                        callback.error(JokeCloud.Error())
+                        callback.error(JokeCloudFail.Error())
                     }
                 }
 
                 override fun onFailure(call: Call<Joke>, t: Throwable) {
                     if (t is UnknownHostException){
-                        callback.error(JokeCloud.NoConnection())
+                        callback.error(JokeCloudFail.NoConnection())
                     }
                     else{
-                        callback.error(JokeCloud.ServiceUnavailable())
+                        callback.error(JokeCloudFail.ServiceUnavailable())
                     }
                 }
             })
@@ -47,5 +47,5 @@ interface JokeCloudDataSource {
 
 interface JokeCloudCallback{
     fun success(joke: JokeCloud)
-    fun error(error: JokeCloud)
+    fun error(error: JokeCloudFail)
 }

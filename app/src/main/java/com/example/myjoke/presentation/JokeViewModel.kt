@@ -28,8 +28,8 @@ class JokeViewModel(
         interactor.joke()
     }
 
-    override fun chooseFavorites(state: Boolean) {
-        TODO("Not yet implemented")
+    override fun changeStateFavorites() {
+        interactor.changeStateFavorites(callback)
     }
 
     override fun init(viewModelCallback: ViewModelCallback) {
@@ -46,12 +46,12 @@ interface JokeFetcher {
     fun joke()
 }
 
-interface JokeStatusChanger{
+interface JokeStatusChanger {
     fun changeJokeStatus(cached: Boolean)
 }
 
 interface FavoriteChooser {
-    fun chooseFavorites(state: Boolean)
+    fun changeStateFavorites()
 }
 
 interface Init {

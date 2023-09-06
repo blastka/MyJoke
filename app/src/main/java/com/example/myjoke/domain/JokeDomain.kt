@@ -16,6 +16,12 @@ interface JokeDomain {
                 return JokeUi.BaseJoke(setup, punchline)
             }
         }
+
+        class Favorite(private val setup: String, private val punchline: String) : Success {
+            override fun toUi(): JokeUi {
+                return JokeUi.FavoriteJoke(setup, punchline)
+            }
+        }
     }
 
     interface Fail : JokeDomain {
