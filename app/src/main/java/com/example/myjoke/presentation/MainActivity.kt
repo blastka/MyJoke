@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity() {
         val imageButton = findViewById<ImageButton>(R.id.imageButton)
         val checkBox = findViewById<CheckBox>(R.id.checkBox)
 
-
         imageButton.setOnClickListener {
             viewModel.changeStateFavorites()
         }
@@ -32,13 +31,17 @@ class MainActivity : AppCompatActivity() {
         val callback =
             object : ViewModelCallback {
                 override fun setText(text: String) {
-                    progress.isIndeterminate = false
-                    jokeText.text = text
-                    buttonJoke.isEnabled = true
+                    runOnUiThread {
+                        progress.isIndeterminate = false
+                        jokeText.text = text
+                        buttonJoke.isEnabled = true
+                    }
                 }
 
                 override fun setIcon(id: Int) {
-                    imageButton.setImageResource(id)
+                    runOnUiThread {
+                        imageButton.setImageResource(id)
+                    }
                 }
             }
 

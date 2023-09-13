@@ -1,16 +1,8 @@
 package com.example.myjoke.data
 
-import com.example.myjoke.data.cache.ErrorTypeCache
-import com.example.myjoke.data.cache.JokeCache
 import com.example.myjoke.data.cache.JokeCacheDataSource
-import com.example.myjoke.data.cache.JokeCachedCallback
-import com.example.myjoke.data.cloud.JokeCloud
-import com.example.myjoke.data.cloud.JokeCloudCallback
 import com.example.myjoke.data.cloud.JokeCloudDataSource
-import com.example.myjoke.data.cloud.JokeCloudFail
 import com.example.myjoke.data.cloud.JokeData
-import com.example.myjoke.data.cloud.JokeDataFail
-import com.example.myjoke.domain.RepositoryCallback
 
 class JokeRepository(
     private val cacheDataSource: JokeCacheDataSource,
@@ -20,47 +12,35 @@ class JokeRepository(
     private var cache: Boolean = false
     private var jokeCache: JokeData? = null
 
-    override fun joke(repositoryCallback: RepositoryCallback) {
-
-        if (cache) {
-            cacheDataSource.getJoke(object : JokeCachedCallback {
-                override fun provide(joke: JokeCache) {
-                    jokeCache = joke.toData()
-                    repositoryCallback.success(joke.toData())
-                }
-
-                override fun fail() {
-                    repositoryCallback.error(JokeDataFail.NoCached(ErrorTypeCache.NO_CACHED))
-                }
-            })
-        } else
-            cloudDataSource.getRandomJoke(object : JokeCloudCallback {
-                override fun success(joke: JokeCloud) {
-                    jokeCache = joke.toData()
-                    repositoryCallback.success(joke.toData())
-                }
-
-                override fun error(error: JokeCloudFail) {
-                    repositoryCallback.error(error.toDataFail())
-                }
-            })
+    override suspend fun joke(): JokeData {
+        var result: JokeData
+        try {
+            result = if (cache) {
+                cacheDataSource.getJoke()
+            } else {
+                cloudDataSource.getRandomJoke()
+            }
+            return result
+        } catch (e: Exception) {
+            jokeCache = null
+            throw e
+        }
     }
 
     override fun changeJokeStatus(cached: Boolean) {
         cache = cached
     }
 
-    override fun changeStateFavorites(repositoryCallback: RepositoryCallback) {
+    override suspend fun changeStateFavorites(): JokeData {
         jokeCache?.let {
-            val joke = it.changeFavorite(cacheDataSource)
-            repositoryCallback.success(joke)
+            return it.changeFavorite(cacheDataSource)
         }
+        throw IllegalStateException("empty change joke called")
     }
-
 }
 
 interface JokeRepositoryFetcher {
-    fun joke(repositoryCallback: RepositoryCallback)
+    suspend fun joke(): JokeData
 }
 
 
@@ -69,5 +49,5 @@ interface JokeStatusChanger {
 }
 
 interface FavoriteChooser {
-    fun changeStateFavorites(repositoryCallback: RepositoryCallback)
+    suspend fun changeStateFavorites(): JokeData
 }

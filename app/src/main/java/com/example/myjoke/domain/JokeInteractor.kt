@@ -1,55 +1,35 @@
 package com.example.myjoke.domain
 
-import com.example.myjoke.data.cloud.JokeData
-import com.example.myjoke.data.cloud.JokeDataFail
 import com.example.myjoke.data.JokeRepository
-import com.example.myjoke.presentation.InteractorCallback
 
-class JokeInteractor(private val jokeRepository: JokeRepository) : JokeDomainFetcher, Init,
+class JokeInteractor(private val jokeRepository: JokeRepository,
+    private val domainExceptionHandler: DomainExceptionHandler) : JokeDomainFetcher,
     JokeStatusChanger, FavoriteChooser {
 
-    lateinit var interactorCallback: InteractorCallback
-
-    val callback = object : RepositoryCallback {
-        override fun success(joke: JokeData) {
-            interactorCallback.success(joke.toDomain())
+    override suspend fun joke(): JokeDomain {
+        return try {
+            jokeRepository.joke().toDomain()
+        } catch (e: Exception)
+        {
+            JokeDomain.Fail(domainExceptionHandler.handle(e))
         }
-
-        override fun error(error: JokeDataFail) {
-            interactorCallback.error(error.toDomain())
-        }
-    }
-
-    override fun joke() {
-        jokeRepository.joke(callback)
-    }
-
-    override fun init(interactorCallback: InteractorCallback) {
-        this.interactorCallback = interactorCallback
     }
 
     override fun changeJokeStatus(cached: Boolean) {
         jokeRepository.changeJokeStatus(cached)
     }
 
-    override fun changeStateFavorites(interactorCallback: InteractorCallback) {
-        jokeRepository.changeStateFavorites(callback)
+    override suspend fun changeStateFavorites(): JokeDomain {
+        return try {
+            return jokeRepository.changeStateFavorites().toDomain()
+        } catch (e: Exception){
+            JokeDomain.Fail(domainExceptionHandler.handle(e))
+        }
     }
-
-
-}
-
-interface Init {
-    fun init(interactorCallback: InteractorCallback)
 }
 
 interface JokeDomainFetcher {
-    fun joke()
-}
-
-interface RepositoryCallback {
-    fun success(joke: JokeData)
-    fun error(error: JokeDataFail)
+    suspend fun joke(): JokeDomain
 }
 
 interface JokeStatusChanger {
@@ -57,5 +37,5 @@ interface JokeStatusChanger {
 }
 
 interface FavoriteChooser {
-    fun changeStateFavorites(interactorCallback : InteractorCallback)
+    suspend fun changeStateFavorites(): JokeDomain
 }

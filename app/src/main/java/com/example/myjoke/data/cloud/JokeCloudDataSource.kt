@@ -1,51 +1,28 @@
 package com.example.myjoke.data.cloud
 
-import retrofit2.Call
-import retrofit2.Response
+import android.util.Log
+import com.example.myjoke.data.NoConnection
+import com.example.myjoke.data.ServiceUnavailable
 import java.net.UnknownHostException
 
 interface JokeCloudDataSource {
-    fun getRandomJoke(callback: JokeCloudCallback)
+    suspend fun getRandomJoke(): JokeData
 
-    class Base(private val retrofit: JokeService) :
-        JokeCloudDataSource {
-
-        override fun getRandomJoke(callback: JokeCloudCallback) {
-            val result = retrofit.getAll().execute().body()
-            //result!!.getJoke()
-        }
-    }
-
-    class BaseEnqueue(
+    class Base(
         private val retrofit: JokeService
     ) : JokeCloudDataSource {
 
-        override fun getRandomJoke(callback: JokeCloudCallback) {
-            retrofit.getAll().enqueue(object : retrofit2.Callback<Joke> {
-                override fun onResponse(call: Call<Joke>, response: Response<Joke>) {
-                    if (response.isSuccessful) {
-                        callback.success(response.body()!!.toJokeCloud())
-                    }
-                    else
-                    {
-                        callback.error(JokeCloudFail.Error())
-                    }
-                }
-
-                override fun onFailure(call: Call<Joke>, t: Throwable) {
-                    if (t is UnknownHostException){
-                        callback.error(JokeCloudFail.NoConnection())
-                    }
-                    else{
-                        callback.error(JokeCloudFail.ServiceUnavailable())
-                    }
-                }
-            })
+        override suspend fun getRandomJoke(): JokeData {
+            try{
+                val result = retrofit.getJoke()
+                return result.execute().body()!!.toJokeData()
+            }catch(e: Exception){
+                Log.e("MY", "e $e")
+                if(e is UnknownHostException){
+                    throw NoConnection()
+                } else
+                    throw ServiceUnavailable()
+            }
         }
     }
-}
-
-interface JokeCloudCallback{
-    fun success(joke: JokeCloud)
-    fun error(error: JokeCloudFail)
 }

@@ -1,55 +1,43 @@
 package com.example.myjoke.data.cloud
 
-import com.example.myjoke.data.cache.ErrorTypeCache
-import com.example.myjoke.data.cache.JokeCache
 import com.example.myjoke.data.cache.JokeCacheDataSource
+import com.example.myjoke.data.cache.JokeRealm
 import com.example.myjoke.domain.JokeDomain
 
 
 interface JokeData {
 
-    fun changeFavorite(cacheDataSource : JokeCacheDataSource): JokeData
-    fun toDomain(): JokeDomain.Success
+    suspend fun changeFavorite(cacheDataSource: JokeCacheDataSource): JokeData
+    fun toDomain(): JokeDomain
+    fun toRealm(): JokeRealm
+    fun toChangeJokeData(cached: Boolean): JokeData
 
-    abstract class Abstract(private val id: Int, private val setup: String, private val punchline: String): JokeData{
+    class Base(
+        private val id: Int,
+        private val setup: String,
+        private val punchline: String,
+        private val cached: Boolean = false
+    ) : JokeData {
 
-        protected fun toCache(): JokeCache{
-            return JokeCache.Base(id, setup, punchline)
+        override suspend fun changeFavorite(cacheDataSource: JokeCacheDataSource): JokeData {
+            return cacheDataSource.changeFavorite(id, this)
         }
 
-        override fun changeFavorite(cacheDataSource : JokeCacheDataSource): JokeData {
-            cacheDataSource.changeFavorite(id, this.toCache())
-            return Favorite(id, setup, punchline)
+        override fun toDomain(): JokeDomain {
+            return JokeDomain.Base(setup, punchline, cached)
         }
-    }
 
-    class Base(id: Int, private val setup: String, private val punchline: String) : Abstract(id, setup, punchline) {
-        override fun toDomain(): JokeDomain.Success {
-            return JokeDomain.Success.Base(setup, punchline)
+        override fun toRealm(): JokeRealm {
+            return JokeRealm().also {
+                it.id = id
+                it.setup = setup
+                it.punchline = punchline
+            }
         }
-    }
 
-    class Favorite(id: Int, private val setup: String, private val punchline: String) : Abstract(id, setup, punchline) {
-        override fun toDomain(): JokeDomain.Success {
-            return JokeDomain.Success.Favorite(setup, punchline)
-        }
-    }
-
-
-}
-
-interface JokeDataFail{
-    fun toDomain(): JokeDomain.Fail
-
-    class Fail(private val text: ErrorType) : JokeDataFail {
-        override fun toDomain(): JokeDomain.Fail {
-            return JokeDomain.Fail.Failed(text)
-        }
-    }
-
-    class NoCached(private val typeCache: ErrorTypeCache) : JokeDataFail {
-        override fun toDomain(): JokeDomain.Fail {
-            return JokeDomain.Fail.NoCached(typeCache)
+        override fun toChangeJokeData(cached: Boolean): JokeData {
+            return Base(id, setup, punchline, cached)
         }
     }
 }
+

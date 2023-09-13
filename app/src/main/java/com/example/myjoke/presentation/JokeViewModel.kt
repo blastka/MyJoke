@@ -1,44 +1,37 @@
 package com.example.myjoke.presentation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.myjoke.domain.DomainExceptionHandler
 import com.example.myjoke.domain.JokeDomain
 import com.example.myjoke.domain.JokeInteractor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class JokeViewModel(
-    private val interactor: JokeInteractor,
-    private val handler: DomainExceptionHandler
-) : ViewModel(), JokeFetcher, FavoriteChooser, Init, JokeStatusChanger {
+    private val interactor: JokeInteractor
+) : ViewModel(), JokeFetcher, FavoriteChooser, JokeStatusChanger, Init {
 
     lateinit var viewModelCallback: ViewModelCallback
 
-    private val callback = object : InteractorCallback {
-        override fun success(jokeDomain: JokeDomain.Success) {
-            val jokeUi = jokeDomain.toUi()
-            jokeUi.map(viewModelCallback)
-        }
-
-        override fun error(jokeDomain: JokeDomain.Fail) {
-            val jokeUi = jokeDomain.toUi(handler)
-            jokeUi.map(viewModelCallback)
-        }
-    }
-
     override fun joke() {
-        interactor.joke()
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.joke().toUi().map(viewModelCallback)
+        }
     }
 
     override fun changeStateFavorites() {
-        interactor.changeStateFavorites(callback)
-    }
-
-    override fun init(viewModelCallback: ViewModelCallback) {
-        this.viewModelCallback = viewModelCallback
-        interactor.init(callback)
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.changeStateFavorites().toUi().map(viewModelCallback)
+        }
     }
 
     override fun changeJokeStatus(cached: Boolean) {
         interactor.changeJokeStatus(cached)
+    }
+
+    override fun init(viewModelCallback: ViewModelCallback) {
+        this.viewModelCallback = viewModelCallback
     }
 }
 
@@ -56,9 +49,4 @@ interface FavoriteChooser {
 
 interface Init {
     fun init(viewModelCallback: ViewModelCallback)
-}
-
-interface InteractorCallback {
-    fun success(jokeDomain: JokeDomain.Success)
-    fun error(jokeDomain: JokeDomain.Fail)
 }
