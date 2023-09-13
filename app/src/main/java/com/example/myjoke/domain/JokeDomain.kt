@@ -1,6 +1,6 @@
 package com.example.myjoke.domain
 
-import com.example.myjoke.data.cloud.JokeUi
+import com.example.myjoke.presentation.JokeUi
 
 interface JokeDomain {
 

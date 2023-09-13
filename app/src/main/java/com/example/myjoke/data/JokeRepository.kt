@@ -15,10 +15,12 @@ class JokeRepository(
     override suspend fun joke(): JokeData {
         var result: JokeData
         try {
-            result = if (cache) {
-                cacheDataSource.getJoke()
+            if (cache) {
+                jokeCache = cacheDataSource.getJoke()
+                result = jokeCache!!
             } else {
-                cloudDataSource.getRandomJoke()
+                jokeCache = cloudDataSource.getRandomJoke()
+                result = jokeCache!!
             }
             return result
         } catch (e: Exception) {
