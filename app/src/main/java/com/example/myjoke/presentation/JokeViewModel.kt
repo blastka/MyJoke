@@ -1,28 +1,27 @@
 package com.example.myjoke.presentation
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myjoke.domain.DomainExceptionHandler
-import com.example.myjoke.domain.JokeDomain
 import com.example.myjoke.domain.JokeInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class JokeViewModel(
     private val interactor: JokeInteractor
-) : ViewModel(), JokeFetcher, FavoriteChooser, JokeStatusChanger, Init {
+) : ViewModel(), JokeFetcher, FavoriteChooser, JokeStatusChanger {
 
-    lateinit var viewModelCallback: ViewModelCallback
+    val liveData = MutableLiveData<Pair<String, Int>>()
 
     override fun joke() {
         viewModelScope.launch(Dispatchers.IO) {
-            interactor.joke().toUi().map(viewModelCallback)
+            liveData.postValue(interactor.joke().toUi().getData())
         }
     }
 
     override fun changeStateFavorites() {
         viewModelScope.launch(Dispatchers.IO) {
-            interactor.changeStateFavorites().toUi().map(viewModelCallback)
+            liveData.postValue(interactor.changeStateFavorites().toUi().getData())
         }
     }
 
@@ -30,9 +29,6 @@ class JokeViewModel(
         interactor.changeJokeStatus(cached)
     }
 
-    override fun init(viewModelCallback: ViewModelCallback) {
-        this.viewModelCallback = viewModelCallback
-    }
 }
 
 interface JokeFetcher {
@@ -48,5 +44,5 @@ interface FavoriteChooser {
 }
 
 interface Init {
-    fun init(viewModelCallback: ViewModelCallback)
+    fun init()
 }

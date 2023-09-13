@@ -27,25 +27,12 @@ class MainActivity : AppCompatActivity() {
         imageButton.setOnClickListener {
             viewModel.changeStateFavorites()
         }
-
-        val callback =
-            object : ViewModelCallback {
-                override fun setText(text: String) {
-                    runOnUiThread {
-                        progress.isIndeterminate = false
-                        jokeText.text = text
-                        buttonJoke.isEnabled = true
-                    }
-                }
-
-                override fun setIcon(id: Int) {
-                    runOnUiThread {
-                        imageButton.setImageResource(id)
-                    }
-                }
-            }
-
-        viewModel.init(callback)
+        viewModel.liveData.observe(this) { (text, icon) ->
+            progress.isIndeterminate = false
+            jokeText.text = text
+            buttonJoke.isEnabled = true
+            imageButton.setImageResource(icon)
+        }
 
         buttonJoke.setOnClickListener {
             progress.isIndeterminate = true
@@ -59,8 +46,4 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-interface ViewModelCallback {
-    fun setText(text: String)
-    fun setIcon(id: Int)
-}
 

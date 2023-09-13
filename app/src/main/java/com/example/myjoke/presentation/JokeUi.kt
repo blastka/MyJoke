@@ -13,12 +13,7 @@ abstract class JokeUi(private val setup: String, private val punchline: String) 
         return "$setup\n$punchline"
     }
 
-    fun map(callback: ViewModelCallback){
-        return callback.run {
-            setText(getString())
-            setIcon(getIconId())
-        }
-    }
+    fun getData() = Pair(getString(), getIconId())
 
     class FavoriteJoke(setup: String, punchline: String): JokeUi(setup, punchline){
         override fun getIconId(): Int {
