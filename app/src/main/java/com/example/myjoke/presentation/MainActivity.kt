@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         imageButton.setOnClickListener {
             viewModel.changeStateFavorites()
         }
-        viewModel.liveData.observe(this) { (text, icon) ->
+        viewModel.observe(this) { (text, icon) ->
             progress.isIndeterminate = false
             jokeText.text = text
             buttonJoke.isEnabled = true
