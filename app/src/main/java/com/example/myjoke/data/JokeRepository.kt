@@ -29,7 +29,7 @@ class JokeRepository(
         }
     }
 
-    override fun changeJokeStatus(cached: Boolean) {
+    override fun changeCachedStatus(cached: Boolean) {
         cache = cached
     }
 
@@ -47,7 +47,7 @@ interface JokeRepositoryFetcher {
 
 
 interface JokeStatusChanger {
-    fun changeJokeStatus(cached: Boolean)
+    fun changeCachedStatus(cached: Boolean)
 }
 
 interface FavoriteChooser {

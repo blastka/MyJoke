@@ -6,7 +6,7 @@ interface JokeDomain {
 
     fun toUi(): JokeUi
 
-    class Base(private val setup: String, private val punchline: String, private val favourite: Boolean) : JokeDomain {
+    data class Base(private val setup: String, private val punchline: String, private val favourite: Boolean) : JokeDomain {
         override fun toUi(): JokeUi {
             return if (favourite)
                 JokeUi.FavoriteJoke(setup, punchline)
@@ -15,7 +15,7 @@ interface JokeDomain {
         }
     }
 
-    class Fail(private val error: String) : JokeDomain {
+    data class Fail(private val error: String) : JokeDomain {
         override fun toUi(): JokeUi {
             return JokeUi.FailedJoke(error)
         }

@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         checkBox.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.changeJokeStatus(isChecked)
+            viewModel.changeCachedStatus(isChecked)
         }
     }
 }

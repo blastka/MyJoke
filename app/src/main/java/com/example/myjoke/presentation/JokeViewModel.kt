@@ -1,33 +1,33 @@
 package com.example.myjoke.presentation
 
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myjoke.core.DispatcherList
 import com.example.myjoke.domain.JokeInteractor
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class JokeViewModel(
     private val interactor: JokeInteractor,
-    private val communication: Communication<Pair<String, Int>>
+    private val communication: Communication<Pair<String, Int>>,
+    private val dispatcher: DispatcherList
 ) : ViewModel(), JokeFetcher, FavoriteChooser, JokeStatusChanger, JokeObserver {
 
     override fun joke() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcher.io()) {
             communication.postValue(interactor.joke().toUi().getData())
         }
     }
 
     override fun changeStateFavorites() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcher.io()) {
             communication.postValue(interactor.changeStateFavorites().toUi().getData())
         }
     }
 
-    override fun changeJokeStatus(cached: Boolean) {
-        interactor.changeJokeStatus(cached)
+    override fun changeCachedStatus(cached: Boolean) {
+        interactor.changeCachedStatus(cached)
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<Pair<String, Int>>) {
@@ -45,7 +45,7 @@ interface JokeFetcher {
 }
 
 interface JokeStatusChanger {
-    fun changeJokeStatus(cached: Boolean)
+    fun changeCachedStatus(cached: Boolean)
 }
 
 interface FavoriteChooser {

@@ -2,27 +2,30 @@ package com.example.myjoke.domain
 
 import com.example.myjoke.data.JokeRepository
 
-class JokeInteractor(private val jokeRepository: JokeRepository,
-    private val domainExceptionHandler: DomainExceptionHandler) : JokeDomainFetcher,
-    JokeStatusChanger, FavoriteChooser {
+interface JokeInteractor: JokeDomainFetcher,
+    JokeStatusChanger, FavoriteChooser
+
+class BaseJokeInteractor(
+    private val jokeRepository: JokeRepository,
+    private val domainExceptionHandler: DomainExceptionHandler
+) : JokeInteractor {
 
     override suspend fun joke(): JokeDomain {
         return try {
             jokeRepository.joke().toDomain()
-        } catch (e: Exception)
-        {
+        } catch (e: Exception) {
             JokeDomain.Fail(domainExceptionHandler.handle(e))
         }
     }
 
-    override fun changeJokeStatus(cached: Boolean) {
-        jokeRepository.changeJokeStatus(cached)
+    override fun changeCachedStatus(cached: Boolean) {
+        jokeRepository.changeCachedStatus(cached)
     }
 
     override suspend fun changeStateFavorites(): JokeDomain {
         return try {
             return jokeRepository.changeStateFavorites().toDomain()
-        } catch (e: Exception){
+        } catch (e: Exception) {
             JokeDomain.Fail(domainExceptionHandler.handle(e))
         }
     }
@@ -33,7 +36,7 @@ interface JokeDomainFetcher {
 }
 
 interface JokeStatusChanger {
-    fun changeJokeStatus(cached: Boolean)
+    fun changeCachedStatus(cached: Boolean)
 }
 
 interface FavoriteChooser {
