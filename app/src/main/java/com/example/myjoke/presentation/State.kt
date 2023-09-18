@@ -1,38 +1,52 @@
 package com.example.myjoke.presentation
 
-import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.annotation.DrawableRes
 
+interface Show<T>{
+    fun show(arg: T)
+}
+
+interface ShowText: Show<String>
+
+interface ShowImage: Show<Int>
+
+interface ShowView: Show<Boolean>
+
+interface EnableView {
+    fun enable(enable: Boolean)
+}
+
 sealed class State {
-    abstract fun show(progress: ProgressBar, button: Button, textView: TextView, imageButton: ImageButton)
+    abstract fun show(
+        progress: ShowView,
+        button: EnableView,
+        textView: ShowText,
+        imageButton: ShowImage
+    )
 
     object Progress : State() {
         override fun show(
-            progress: ProgressBar,
-            button: Button,
-            textView: TextView,
-            imageButton: ImageButton
+            progress: ShowView,
+            button: EnableView,
+            textView: ShowText,
+            imageButton: ShowImage
         ) {
-            progress.isIndeterminate = true
-            button.isEnabled = false
+            progress.show(true)
+            button.enable(false)
         }
     }
 
     data class Initial(private val text: String, @DrawableRes private val id: Int) : State() {
         override fun show(
-            progress: ProgressBar,
-            button: Button,
-            textView: TextView,
-            imageButton: ImageButton
+            progress: ShowView,
+            button: EnableView,
+            textView: ShowText,
+            imageButton: ShowImage
         ) {
-            progress.isIndeterminate = false
-            textView.text = text
-            button.isEnabled = true
-            imageButton.setImageResource(id)
+            progress.show(false)
+            textView.show(text)
+            button.enable(true)
+            imageButton.show(id)
         }
     }
 }

@@ -9,8 +9,8 @@ import com.example.myjoke.data.cache.RealmProvider
 import com.example.myjoke.data.cloud.JokeCloudDataSource
 import com.example.myjoke.data.cloud.JokeService
 import com.example.myjoke.data.cloud.RetrofitBuilder
-import com.example.myjoke.domain.DomainExceptionHandler
 import com.example.myjoke.domain.BaseJokeInteractor
+import com.example.myjoke.domain.DomainExceptionHandler
 import com.example.myjoke.presentation.Communication
 import com.example.myjoke.presentation.JokeViewModel
 import io.realm.Realm
