@@ -27,17 +27,12 @@ class MainActivity : AppCompatActivity() {
         imageButton.setOnClickListener {
             viewModel.changeStateFavorites()
         }
-        viewModel.observe(this) { (text, icon) ->
-            progress.isIndeterminate = false
-            jokeText.text = text
-            buttonJoke.isEnabled = true
-            imageButton.setImageResource(icon)
+        viewModel.observe(this) { state ->
+            state.show(progress, buttonJoke, jokeText, imageButton)
         }
 
         buttonJoke.setOnClickListener {
-            progress.isIndeterminate = true
             viewModel.joke()
-            buttonJoke.isEnabled = false
         }
 
         checkBox.setOnCheckedChangeListener { _, isChecked ->

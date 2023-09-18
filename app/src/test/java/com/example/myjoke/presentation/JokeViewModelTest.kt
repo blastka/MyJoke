@@ -140,7 +140,7 @@ class TestCommunication: Communication<Pair<String, Int>>{
     var id = -1
     var observedCount = 0
 
-    override fun postValue(data: Pair<String, Int>) {
+    override fun postValue(data: State.Initial) {
         text = data.first
         id = data.second
     }

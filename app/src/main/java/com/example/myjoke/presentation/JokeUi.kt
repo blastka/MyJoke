@@ -13,7 +13,11 @@ abstract class JokeUi(private val setup: String, private val punchline: String) 
         return "$setup\n$punchline"
     }
 
-    fun getData() = Pair(getString(), getIconId())
+    protected fun getData() = State.Initial(getString(), getIconId())
+
+    fun show(communication: Communication<State>){
+        communication.postValue(getData())
+    }
 
     class FavoriteJoke(setup: String, punchline: String): JokeUi(setup, punchline){
         override fun getIconId(): Int {

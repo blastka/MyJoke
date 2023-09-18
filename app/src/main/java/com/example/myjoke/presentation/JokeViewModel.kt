@@ -10,19 +10,20 @@ import kotlinx.coroutines.launch
 
 class JokeViewModel(
     private val interactor: JokeInteractor,
-    private val communication: Communication<Pair<String, Int>>,
+    private val communication: Communication<State>,
     private val dispatcher: DispatcherList
 ) : ViewModel(), JokeFetcher, FavoriteChooser, JokeStatusChanger, JokeObserver {
 
     override fun joke() {
         viewModelScope.launch(dispatcher.io()) {
-            communication.postValue(interactor.joke().toUi().getData())
+            communication.postValue(State.Progress)
+            interactor.joke().toUi().show(communication)
         }
     }
 
     override fun changeStateFavorites() {
         viewModelScope.launch(dispatcher.io()) {
-            communication.postValue(interactor.changeStateFavorites().toUi().getData())
+            interactor.changeStateFavorites().toUi().show(communication)
         }
     }
 
@@ -30,14 +31,14 @@ class JokeViewModel(
         interactor.changeCachedStatus(cached)
     }
 
-    override fun observe(owner: LifecycleOwner, observer: Observer<Pair<String, Int>>) {
+    override fun observe(owner: LifecycleOwner, observer: Observer<State>) {
         communication.observe(owner, observer)
     }
 
 }
 
 interface JokeObserver{
-    fun observe(owner: LifecycleOwner, observer: Observer<Pair<String, Int>>)
+    fun observe(owner: LifecycleOwner, observer: Observer<State>)
 }
 
 interface JokeFetcher {
