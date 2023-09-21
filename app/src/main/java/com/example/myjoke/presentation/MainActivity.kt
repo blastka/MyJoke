@@ -2,6 +2,7 @@ package com.example.myjoke.presentation
 
 import android.os.Bundle
 import android.widget.CheckBox
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myjoke.JokeApp
 import com.example.myjoke.R
@@ -9,6 +10,7 @@ import com.example.myjoke.presentation.views.CorrectButton
 import com.example.myjoke.presentation.views.CorrectImageButton
 import com.example.myjoke.presentation.views.CorrectProgress
 import com.example.myjoke.presentation.views.CorrectTextView
+import com.example.myjoke.presentation.views.FavoriteDataView
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,27 +20,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         viewModel = (application as JokeApp).viewModel
-        val buttonJoke = findViewById<CorrectButton>(R.id.jokeButton)
-        val jokeText = findViewById<CorrectTextView>(R.id.jokeText)
-        val progress = findViewById<CorrectProgress>(R.id.progressBar)
-        val imageButton = findViewById<CorrectImageButton>(R.id.imageButton)
-        val checkBox = findViewById<CheckBox>(R.id.checkBox)
+        val favoriteDataView = findViewById<FavoriteDataView>(R.id.favouriteView)
 
-        imageButton.setOnClickListener {
+        favoriteDataView.handleChangeButton {
             viewModel.changeStateFavorites()
         }
+
         viewModel.observe(this) { state ->
-            state.show(progress, buttonJoke, jokeText, imageButton)
+            favoriteDataView.show(state)
         }
 
-        buttonJoke.setOnClickListener {
+        favoriteDataView.handleActionButton {
             viewModel.joke()
         }
 
-        checkBox.setOnCheckedChangeListener { _, isChecked ->
+        favoriteDataView.listenChanges { isChecked->
             viewModel.changeCachedStatus(isChecked)
         }
     }
+
+
 }
 
 
