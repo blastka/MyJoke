@@ -12,7 +12,8 @@
         android:id="@+id/favouriteView"
         android:layout_width="match_parent"
         app:actionButtonText="@string/get_joke"
-        app:checkBoxText="@string/cache"
+        app:checkBoxText="@string/cache_joke"
         android:layout_height="wrap_content"/>
+
 
 </LinearLayout>

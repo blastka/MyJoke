@@ -15,19 +15,19 @@ import com.example.myjoke.presentation.Communication
 import com.example.myjoke.presentation.JokeViewModel
 import io.realm.Realm
 
-class JokeApp : Application() {
+class App : Application() {
 
     lateinit var viewModel: JokeViewModel
 
     override fun onCreate() {
         super.onCreate()
-        val retrofitBuilder = RetrofitBuilder().retrofit
+        val retrofitBuilder = RetrofitBuilder.RetrofitQuote().retrofit
         Realm.init(this)
         viewModel = JokeViewModel(
             BaseJokeInteractor(
                 JokeRepository(
                     JokeCacheDataSource.Base(RealmProvider.Base()),
-                    JokeCloudDataSource.Base(retrofitBuilder.create(JokeService::class.java))
+                    JokeCloudDataSource(retrofitBuilder.create(JokeService::class.java))
                 ),
                 DomainExceptionHandler.Base(ResourceManager.Base(this))
             ),

@@ -1,12 +1,13 @@
 package com.example.myjoke.data
 
 import com.example.myjoke.data.cache.JokeCacheDataSource
+import com.example.myjoke.data.cloud.CloudDataSource
 import com.example.myjoke.data.cloud.JokeCloudDataSource
 import com.example.myjoke.data.cloud.JokeData
 
 class JokeRepository(
     private val cacheDataSource: JokeCacheDataSource,
-    private val cloudDataSource: JokeCloudDataSource
+    private val cloudDataSource: CloudDataSource
 ) : JokeRepositoryFetcher, JokeStatusChanger, FavoriteChooser {
 
     private var cache: Boolean = false

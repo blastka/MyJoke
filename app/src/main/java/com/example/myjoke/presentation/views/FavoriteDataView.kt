@@ -78,5 +78,4 @@ class FavoriteDataView : LinearLayout {
     fun show(state: State) {
         state.show(progress, actionButton, textView, imageButton)
     }
-
 }
