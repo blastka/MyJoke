@@ -21,7 +21,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val retrofitBuilder = RetrofitBuilder.RetrofitQuote().retrofit
+        val retrofitBuilder = RetrofitBuilder.RetrofitJoke().retrofit
         Realm.init(this)
         viewModel = JokeViewModel(
             BaseJokeInteractor(
