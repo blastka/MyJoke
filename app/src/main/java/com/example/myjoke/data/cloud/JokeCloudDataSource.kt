@@ -1,51 +1,46 @@
 package com.example.myjoke.data.cloud
 
+import android.util.Log
+import com.example.myjoke.core.Mapper
+import com.example.myjoke.data.NoConnection
+import com.example.myjoke.data.ServiceUnavailable
 import retrofit2.Call
-import retrofit2.Response
 import java.net.UnknownHostException
 
-interface JokeCloudDataSource {
-    fun getRandomJoke(callback: JokeCloudCallback)
+interface CloudDataSource {
 
-    class Base(private val retrofit: JokeService) :
-        JokeCloudDataSource {
+    suspend fun getRandomJoke(): JokeData
 
-        override fun getRandomJoke(callback: JokeCloudCallback) {
-            val result = retrofit.getAll().execute().body()
-            //result!!.getJoke()
-        }
-    }
+    abstract class Abstract<T : Mapper<JokeData>>() : CloudDataSource {
 
-    class BaseEnqueue(
-        private val retrofit: JokeService
-    ) : JokeCloudDataSource {
+        protected abstract fun getServerModel(): Call<T>
 
-        override fun getRandomJoke(callback: JokeCloudCallback) {
-            retrofit.getAll().enqueue(object : retrofit2.Callback<Joke> {
-                override fun onResponse(call: Call<Joke>, response: Response<Joke>) {
-                    if (response.isSuccessful) {
-                        callback.success(response.body()!!.toJokeCloud())
-                    }
-                    else
-                    {
-                        callback.error(JokeCloudFail.Error())
-                    }
-                }
-
-                override fun onFailure(call: Call<Joke>, t: Throwable) {
-                    if (t is UnknownHostException){
-                        callback.error(JokeCloudFail.NoConnection())
-                    }
-                    else{
-                        callback.error(JokeCloudFail.ServiceUnavailable())
-                    }
-                }
-            })
+        override suspend fun getRandomJoke(): JokeData {
+            try {
+                val result = getServerModel()
+                return result.execute().body()!!.to()
+            } catch (e: Exception) {
+                if (e is UnknownHostException) {
+                    throw NoConnection()
+                } else
+                    throw ServiceUnavailable()
+            }
         }
     }
 }
 
-interface JokeCloudCallback{
-    fun success(joke: JokeCloud)
-    fun error(error: JokeCloudFail)
+class JokeCloudDataSource(private val service: JokeService) :
+    CloudDataSource.Abstract<JokeCloud>() {
+
+    override fun getServerModel(): Call<JokeCloud> {
+        return service.getJoke()
+    }
+}
+
+class QuoteCloudDataSource(private val service: QuoteService) :
+    CloudDataSource.Abstract<QuoteCloud>() {
+
+    override fun getServerModel(): Call<QuoteCloud> {
+        return service.getJoke()
+    }
 }

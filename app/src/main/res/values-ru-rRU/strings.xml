@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MyJoke</string>
+    <string name="get_quote">Получить цитату</string>
     <string name="error">Ошибка</string>
     <string name="no_connection">Нет соединения</string>
     <string name="service_unavailable">Сервис недоступен</string>
-    <string name="cache">кэш</string>
     <string name="get_joke">Получить шутку</string>
     <string name="unknown">Неизвестно</string>
     <string name="no_cached">Не сохранена</string>
+    <string name="cache_joke">Показать избранные шутки</string>
+    <string name="cache_quote">Показать избранные цитаты</string>
 </resources>

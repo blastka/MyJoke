@@ -1,8 +1,7 @@
-package com.example.myjoke.data.cloud
+package com.example.myjoke.presentation
 
 import androidx.annotation.DrawableRes
 import com.example.myjoke.R
-import com.example.myjoke.presentation.ViewModelCallback
 
 
 abstract class JokeUi(private val setup: String, private val punchline: String) {
@@ -14,11 +13,10 @@ abstract class JokeUi(private val setup: String, private val punchline: String) 
         return "$setup\n$punchline"
     }
 
-    fun map(callback: ViewModelCallback){
-        return callback.run {
-            setText(getString())
-            setIcon(getIconId())
-        }
+    protected fun getData() = State.Initial(getString(), getIconId())
+
+    fun show(communication: Communication<State>){
+        communication.postValue(getData())
     }
 
     class FavoriteJoke(setup: String, punchline: String): JokeUi(setup, punchline){

@@ -1,45 +1,44 @@
 package com.example.myjoke.presentation
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.example.myjoke.domain.DomainExceptionHandler
-import com.example.myjoke.domain.JokeDomain
+import androidx.lifecycle.viewModelScope
+import com.example.myjoke.core.DispatcherList
 import com.example.myjoke.domain.JokeInteractor
+import kotlinx.coroutines.launch
 
 class JokeViewModel(
     private val interactor: JokeInteractor,
-    private val handler: DomainExceptionHandler
-) : ViewModel(), JokeFetcher, FavoriteChooser, Init, JokeStatusChanger {
-
-    lateinit var viewModelCallback: ViewModelCallback
-
-    private val callback = object : InteractorCallback {
-        override fun success(jokeDomain: JokeDomain.Success) {
-            val jokeUi = jokeDomain.toUi()
-            jokeUi.map(viewModelCallback)
-        }
-
-        override fun error(jokeDomain: JokeDomain.Fail) {
-            val jokeUi = jokeDomain.toUi(handler)
-            jokeUi.map(viewModelCallback)
-        }
-    }
+    private val communication: Communication<State>,
+    private val dispatcher: DispatcherList
+) : ViewModel(), JokeFetcher, FavoriteChooser, JokeStatusChanger, JokeObserver {
 
     override fun joke() {
-        interactor.joke()
+        viewModelScope.launch(dispatcher.io()) {
+            communication.postValue(State.Progress)
+            interactor.joke().toUi().show(communication)
+        }
     }
 
     override fun changeStateFavorites() {
-        interactor.changeStateFavorites(callback)
+        viewModelScope.launch(dispatcher.io()) {
+            interactor.changeStateFavorites().toUi().show(communication)
+        }
     }
 
-    override fun init(viewModelCallback: ViewModelCallback) {
-        this.viewModelCallback = viewModelCallback
-        interactor.init(callback)
+    override fun changeCachedStatus(cached: Boolean) {
+        interactor.changeCachedStatus(cached)
     }
 
-    override fun changeJokeStatus(cached: Boolean) {
-        interactor.changeJokeStatus(cached)
+    override fun observe(owner: LifecycleOwner, observer: Observer<State>) {
+        communication.observe(owner, observer)
     }
+
+}
+
+interface JokeObserver{
+    fun observe(owner: LifecycleOwner, observer: Observer<State>)
 }
 
 interface JokeFetcher {
@@ -47,7 +46,7 @@ interface JokeFetcher {
 }
 
 interface JokeStatusChanger {
-    fun changeJokeStatus(cached: Boolean)
+    fun changeCachedStatus(cached: Boolean)
 }
 
 interface FavoriteChooser {
@@ -55,10 +54,5 @@ interface FavoriteChooser {
 }
 
 interface Init {
-    fun init(viewModelCallback: ViewModelCallback)
-}
-
-interface InteractorCallback {
-    fun success(jokeDomain: JokeDomain.Success)
-    fun error(jokeDomain: JokeDomain.Fail)
+    fun init()
 }
