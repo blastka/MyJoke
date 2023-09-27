@@ -1,14 +1,12 @@
 package com.example.myjoke.data.cloud
 
-import com.example.myjoke.data.cache.JokeCacheDataSource
+import com.example.myjoke.data.ChangeJokeStatus
+import com.example.myjoke.data.cache.JokeCacheDataSourceStatus
 import com.example.myjoke.data.cache.JokeRealm
 import com.example.myjoke.domain.JokeDomain
 
+interface JokeData: ChangeJoke, MapperDataToDomain {
 
-interface JokeData {
-
-    suspend fun changeFavorite(cacheDataSource: JokeCacheDataSource): JokeData
-    fun toDomain(): JokeDomain
     fun toRealm(): JokeRealm
     fun toChangeJokeData(cached: Boolean): JokeData
 
@@ -19,8 +17,8 @@ interface JokeData {
         private val cached: Boolean = false
     ) : JokeData {
 
-        override suspend fun changeFavorite(cacheDataSource: JokeCacheDataSource): JokeData {
-            return cacheDataSource.changeFavorite(id, this)
+        override suspend fun changeFavorite(changeJokeStatus: ChangeJokeStatus): JokeData {
+            return changeJokeStatus.change(id, this)
         }
 
         override fun toDomain(): JokeDomain {
@@ -39,5 +37,10 @@ interface JokeData {
             return Base(id, setup, punchline, cached)
         }
     }
+
+}
+
+interface MapperDataToDomain{
+    fun toDomain(): JokeDomain
 }
 

@@ -2,6 +2,6 @@ package com.example.myjoke.data
 
 import com.example.myjoke.data.cloud.JokeData
 
-interface ChangeJoke {
-    fun change(id: Int, jokeData: JokeData)
+interface JokeDataFetcher {
+    suspend fun getJoke(): JokeData
 }

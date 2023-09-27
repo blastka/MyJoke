@@ -1,16 +1,16 @@
 package com.example.myjoke.data.cache
 
+import com.example.myjoke.data.ChangeJokeStatus
+import com.example.myjoke.data.JokeDataFetcher
 import com.example.myjoke.data.NoCached
 import com.example.myjoke.data.cloud.JokeData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 
-interface JokeCacheDataSource {
-    suspend fun getJoke(): JokeData
-    suspend fun changeFavorite(id: Int, jokeData: JokeData): JokeData
+interface JokeCacheDataSourceStatus: ChangeJokeStatus, JokeDataFetcher {
 
-    class Base(private val realm: RealmProvider) : JokeCacheDataSource {
+    class Base(private val realm: RealmProvider) : JokeCacheDataSourceStatus {
 
         override suspend fun getJoke(): JokeData {
             realm.getRealm().use {
@@ -29,7 +29,7 @@ interface JokeCacheDataSource {
             }
         }
 
-        override suspend fun changeFavorite(id: Int, jokeData: JokeData): JokeData =
+        override suspend fun change(id: Int, jokeData: JokeData): JokeData =
             withContext(Dispatchers.IO) {
                 realm.getRealm().use {
                     val jokeRealm =

@@ -1,21 +1,19 @@
 package com.example.myjoke.data.cloud
 
-import android.util.Log
 import com.example.myjoke.core.Mapper
+import com.example.myjoke.data.JokeDataFetcher
 import com.example.myjoke.data.NoConnection
 import com.example.myjoke.data.ServiceUnavailable
 import retrofit2.Call
 import java.net.UnknownHostException
 
-interface CloudDataSource {
-
-    suspend fun getRandomJoke(): JokeData
+interface CloudDataSource: JokeDataFetcher {
 
     abstract class Abstract<T : Mapper<JokeData>>() : CloudDataSource {
 
         protected abstract fun getServerModel(): Call<T>
 
-        override suspend fun getRandomJoke(): JokeData {
+        override suspend fun getJoke(): JokeData {
             try {
                 val result = getServerModel()
                 return result.execute().body()!!.to()
@@ -29,7 +27,7 @@ interface CloudDataSource {
     }
 }
 
-class JokeCloudDataSource(private val service: JokeService) :
+class JokeDataCloudDataSource(private val service: JokeService) :
     CloudDataSource.Abstract<JokeCloud>() {
 
     override fun getServerModel(): Call<JokeCloud> {

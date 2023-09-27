@@ -4,9 +4,10 @@ import android.app.Application
 import com.example.myjoke.core.DispatcherList
 import com.example.myjoke.core.ResourceManager
 import com.example.myjoke.data.JokeRepository
-import com.example.myjoke.data.cache.JokeCacheDataSource
+import com.example.myjoke.data.cache.CachedJoke
+import com.example.myjoke.data.cache.JokeCacheDataSourceStatus
 import com.example.myjoke.data.cache.RealmProvider
-import com.example.myjoke.data.cloud.JokeCloudDataSource
+import com.example.myjoke.data.cloud.JokeDataCloudDataSource
 import com.example.myjoke.data.cloud.JokeService
 import com.example.myjoke.data.cloud.RetrofitBuilder
 import com.example.myjoke.domain.BaseJokeInteractor
@@ -26,8 +27,9 @@ class App : Application() {
         viewModel = JokeViewModel(
             BaseJokeInteractor(
                 JokeRepository(
-                    JokeCacheDataSource.Base(RealmProvider.Base()),
-                    JokeCloudDataSource(retrofitBuilder.create(JokeService::class.java))
+                    JokeCacheDataSourceStatus.Base(RealmProvider.Base()),
+                    JokeDataCloudDataSource(retrofitBuilder.create(JokeService::class.java)),
+                    CachedJoke.Base()
                 ),
                 DomainExceptionHandler.Base(ResourceManager.Base(this))
             ),

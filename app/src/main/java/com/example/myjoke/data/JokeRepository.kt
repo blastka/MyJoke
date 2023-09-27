@@ -1,44 +1,41 @@
 package com.example.myjoke.data
 
-import com.example.myjoke.data.cache.JokeCacheDataSource
+import com.example.myjoke.data.cache.CachedJoke
+import com.example.myjoke.data.cache.JokeCacheDataSourceStatus
+import com.example.myjoke.data.cloud.ChangeJoke
 import com.example.myjoke.data.cloud.CloudDataSource
-import com.example.myjoke.data.cloud.JokeCloudDataSource
 import com.example.myjoke.data.cloud.JokeData
 
 class JokeRepository(
-    private val cacheDataSource: JokeCacheDataSource,
-    private val cloudDataSource: CloudDataSource
+    private val cacheDataSource: JokeCacheDataSourceStatus,
+    private val cloudDataSource: CloudDataSource,
+    private val cachedJoke: CachedJoke
 ) : JokeRepositoryFetcher, JokeStatusChanger, FavoriteChooser {
 
-    private var cache: Boolean = false
-    private var jokeCache: JokeData? = null
+
+    private var currentDataSource: JokeDataFetcher = cloudDataSource
 
     override suspend fun joke(): JokeData {
-        var result: JokeData
+        val result: JokeData
         try {
-            if (cache) {
-                jokeCache = cacheDataSource.getJoke()
-                result = jokeCache!!
-            } else {
-                jokeCache = cloudDataSource.getRandomJoke()
-                result = jokeCache!!
-            }
+            result = currentDataSource.getJoke()
+            cachedJoke.save(result)
             return result
         } catch (e: Exception) {
-            jokeCache = null
+            cachedJoke.clean()
             throw e
         }
     }
 
     override fun changeCachedStatus(cached: Boolean) {
-        cache = cached
+        currentDataSource = if (cached)
+            cacheDataSource
+        else
+            cloudDataSource
     }
 
     override suspend fun changeStateFavorites(): JokeData {
-        jokeCache?.let {
-            return it.changeFavorite(cacheDataSource)
-        }
-        throw IllegalStateException("empty change joke called")
+        return cachedJoke.changeFavorite(cacheDataSource)
     }
 }
 
