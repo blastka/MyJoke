@@ -25,6 +25,6 @@ abstract class RetrofitBuilder {
     }
 
     class RetrofitQuote : RetrofitBuilder() {
-        override fun baseUrl(): String = "https://v2.jokeapi.dev/joke/"
+        override fun baseUrl(): String = "https://api.quotable.io/"
     }
 }

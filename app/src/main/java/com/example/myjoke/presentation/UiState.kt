@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import com.example.myjoke.R
 
 
-abstract class JokeUi(private val setup: String, private val punchline: String) {
+abstract class UiState(private val setup: String, private val punchline: String) {
 
     @DrawableRes
     protected abstract fun getIconId(): Int
@@ -19,19 +19,19 @@ abstract class JokeUi(private val setup: String, private val punchline: String) 
         communication.postValue(getData())
     }
 
-    class FavoriteJoke(setup: String, punchline: String): JokeUi(setup, punchline){
+    class FavoriteState(setup: String, punchline: String): UiState(setup, punchline){
         override fun getIconId(): Int {
             return R.drawable.ic_baseline_favorite_24
         }
     }
 
-    class BaseJoke(setup: String, punchline: String): JokeUi(setup, punchline){
+    class BaseState(setup: String, punchline: String): UiState(setup, punchline){
         override fun getIconId(): Int {
             return R.drawable.ic_baseline_favorite_border_24
         }
     }
 
-    class FailedJoke(text: String): JokeUi(text, ""){
+    class FailedState(text: String): UiState(text, ""){
         override fun getIconId(): Int {
             return 0
         }

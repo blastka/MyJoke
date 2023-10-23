@@ -2,7 +2,6 @@ package com.example.myjoke.presentation.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import android.widget.ProgressBar
 import com.example.myjoke.presentation.ShowView
 

@@ -3,11 +3,10 @@ package com.example.myjoke.presentation.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.CheckBox
 import android.widget.LinearLayout
-import androidx.core.view.get
 import com.example.myjoke.R
+import com.example.myjoke.presentation.BaseViewModel
 import com.example.myjoke.presentation.State
 
 class FavoriteDataView : LinearLayout {
@@ -77,5 +76,18 @@ class FavoriteDataView : LinearLayout {
 
     fun show(state: State) {
         state.show(progress, actionButton, textView, imageButton)
+    }
+
+    fun linkWith(viewModel: BaseViewModel){
+        checkBox.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.changeCachedStatus(isChecked)
+        }
+        imageButton.setOnClickListener {
+            viewModel.changeStateFavorites()
+        }
+        actionButton.setOnClickListener {
+            viewModel.joke()
+        }
+
     }
 }

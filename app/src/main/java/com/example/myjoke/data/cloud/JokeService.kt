@@ -5,10 +5,10 @@ import retrofit2.http.GET
 
 interface JokeService {
     @GET("random_joke")
-    fun getJoke(): Call<JokeCloud>
+    fun getJoke(): Call<JokeCloudModel>
 }
 
 interface QuoteService{
-    @GET("Any")
-    fun getJoke(): Call<QuoteCloud>
+    @GET("random")
+    fun getQuote(): Call<QuoteCloudModel>
 }

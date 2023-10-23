@@ -11,8 +11,8 @@
     <com.example.myjoke.presentation.views.FavoriteDataView
         android:id="@+id/favouriteView"
         android:layout_width="match_parent"
-        app:actionButtonText="@string/get_joke"
-        app:checkBoxText="@string/cache_joke"
+        app:actionButtonText="@string/get_quote"
+        app:checkBoxText="@string/cache_quote"
         android:layout_height="wrap_content"/>
 
 
