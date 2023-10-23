@@ -1,7 +1,7 @@
 package com.example.myjoke.data.cloud
 
 import com.example.myjoke.data.ChangeItemStatus
-import com.example.myjoke.data.cache.DataMapper
+import com.example.myjoke.core.DataMapper
 
 interface DataModel : ChangeItem {
 

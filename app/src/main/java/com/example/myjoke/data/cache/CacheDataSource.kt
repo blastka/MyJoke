@@ -1,5 +1,7 @@
 package com.example.myjoke.data.cache
 
+import com.example.myjoke.core.DataMapper
+import com.example.myjoke.core.RealmToDataMapper
 import com.example.myjoke.data.ChangeItemStatus
 import com.example.myjoke.data.DataFetcher
 import com.example.myjoke.data.NoCached

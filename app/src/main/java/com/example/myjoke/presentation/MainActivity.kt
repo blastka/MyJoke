@@ -8,32 +8,24 @@ import com.example.myjoke.presentation.views.FavoriteDataView
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var viewModel: CommonViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        viewModel = (application as App).viewModel
-        val favoriteDataView = findViewById<FavoriteDataView>(R.id.favouriteView)
-        favoriteDataView.linkWith(viewModel)
-        favoriteDataView.handleChangeButton {
-            viewModel.changeStateFavorites()
-        }
+        val jokeViewModel = (application as App).jokeViewModel
+        val favoriteDataView = findViewById<FavoriteDataView>(R.id.jokeFavouriteView)
+        favoriteDataView.linkWith(jokeViewModel)
 
-        viewModel.observe(this) { state ->
+        jokeViewModel.observe(this) { state ->
             favoriteDataView.show(state)
         }
 
-        favoriteDataView.handleActionButton {
-            viewModel.joke()
-        }
+        val quoteViewModel = (application as App).quoteViewModel
+        val quoteDataView = findViewById<FavoriteDataView>(R.id.quoteFavouriteView)
+        quoteDataView.linkWith(quoteViewModel)
 
-        favoriteDataView.listenChanges { isChecked->
-            viewModel.changeCachedStatus(isChecked)
+        quoteViewModel.observe(this) { state ->
+            quoteDataView.show(state)
         }
     }
-
-
 }
-
-

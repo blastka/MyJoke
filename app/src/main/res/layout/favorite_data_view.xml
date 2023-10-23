@@ -2,8 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    >
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -24,6 +23,7 @@
             android:layout_height="wrap_content"
             android:text="Hello World!"
             android:layout_gravity="center"
+            android:layout_weight="0.9"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +32,8 @@
         <com.example.myjoke.presentation.views.CorrectImageButton
             android:id="@+id/imageButton"
             android:layout_gravity="center_vertical"
-            android:layout_width="match_parent"
+            android:layout_weight="0.1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:srcCompat="@drawable/ic_baseline_favorite_border_24" />
 

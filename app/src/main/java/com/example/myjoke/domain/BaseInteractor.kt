@@ -1,7 +1,7 @@
 package com.example.myjoke.domain
 
 import com.example.myjoke.data.CommonRepository
-import com.example.myjoke.data.cache.DataMapper
+import com.example.myjoke.core.DataMapper
 
 interface Interactor{
     suspend fun getItem(): ItemDomain
