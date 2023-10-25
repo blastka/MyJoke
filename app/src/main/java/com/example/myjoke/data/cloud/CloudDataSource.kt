@@ -7,13 +7,13 @@ import com.example.myjoke.data.ServiceUnavailable
 import retrofit2.Call
 import java.net.UnknownHostException
 
-interface CloudDataSource: DataFetcher {
+interface CloudDataSource<E>: DataFetcher<E> {
 
-    abstract class Abstract<T : Mapper<DataModel>>() : CloudDataSource {
+    abstract class Abstract<T : Mapper<DataModel<E>>, E>() : CloudDataSource<E> {
 
         protected abstract fun getServerModel(): Call<T>
 
-        override suspend fun getItem(): DataModel {
+        override suspend fun getItem(): DataModel<E> {
             try {
                 val result = getServerModel()
                 return result.execute().body()!!.to()

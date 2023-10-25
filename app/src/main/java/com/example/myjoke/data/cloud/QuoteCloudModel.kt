@@ -3,14 +3,14 @@ package com.example.myjoke.data.cloud
 import com.example.myjoke.core.Mapper
 import com.google.gson.annotations.SerializedName
 
-data class QuoteCloudModel(@SerializedName("id")
-                      private val id: String,
+data class QuoteCloudModel(@SerializedName("_id")
+                      private val _id: String,
                            @SerializedName("content")
                       private val content: String,
                            @SerializedName("author")
-                      private val author: String): Mapper<DataModel> {
+                      private val author: String): Mapper<DataModel<String>> {
 
-    override fun to(): DataModel {
-        return DataModel.BaseModel(System.currentTimeMillis().toInt(), content, author)
+    override fun to(): DataModel<String> {
+        return DataModel.BaseModel(_id, content, author)
     }
 }

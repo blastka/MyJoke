@@ -4,15 +4,15 @@ import com.example.myjoke.data.ChangeItemStatus
 import com.example.myjoke.data.cloud.ChangeItem
 import com.example.myjoke.data.cloud.DataModel
 
-interface CachedData: ChangeItem {
-    fun save(cache: DataModel)
+interface CachedData<E>: ChangeItem<E> {
+    fun save(cache: DataModel<E>)
     fun clean()
 
-    class Base: CachedData{
+    class Base<E>: CachedData<E>{
 
-        private var cache: ChangeItem = ChangeItem.Empty()
+        private var cache: ChangeItem<E> = ChangeItem.Empty()
 
-        override fun save(cache: DataModel) {
+        override fun save(cache: DataModel<E>) {
             this.cache = cache
         }
 
@@ -20,7 +20,7 @@ interface CachedData: ChangeItem {
             cache = ChangeItem.Empty()
         }
 
-        override suspend fun changeFavorite(changeItemStatus: ChangeItemStatus): DataModel {
+        override suspend fun changeFavorite(changeItemStatus: ChangeItemStatus<E>): DataModel<E> {
              return cache.changeFavorite(changeItemStatus)
         }
     }

@@ -5,16 +5,16 @@ import com.example.myjoke.data.cache.CachedData
 import com.example.myjoke.data.cloud.CloudDataSource
 import com.example.myjoke.data.cloud.DataModel
 
-class CommonRepository(
-    private val cacheDataSource: CacheDataSource,
-    private val cloudDataSource: CloudDataSource,
-    private val cachedData: CachedData
-) : Repository {
+class CommonRepository<E>(
+    private val cacheDataSource: CacheDataSource<E>,
+    private val cloudDataSource: CloudDataSource<E>,
+    private val cachedData: CachedData<E>
+) : Repository<E> {
 
-    private var currentDataSource: DataFetcher = cloudDataSource
+    private var currentDataSource: DataFetcher<E> = cloudDataSource
 
-    override suspend fun getData(): DataModel {
-        val result: DataModel
+    override suspend fun getData(): DataModel<E> {
+        val result: DataModel<E>
         try {
             result = currentDataSource.getItem()
             cachedData.save(result)
@@ -32,13 +32,13 @@ class CommonRepository(
             cloudDataSource
     }
 
-    override suspend fun changeStateFavorites(): DataModel {
+    override suspend fun changeStateFavorites(): DataModel<E> {
         return cachedData.changeFavorite(cacheDataSource)
     }
 }
 
-interface Repository{
-    suspend fun getData(): DataModel
+interface Repository<E>{
+    suspend fun getData(): DataModel<E>
     fun changeCachedStatus(cached: Boolean)
-    suspend fun changeStateFavorites(): DataModel
+    suspend fun changeStateFavorites(): DataModel<E>
 }

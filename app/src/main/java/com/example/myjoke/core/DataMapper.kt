@@ -1,5 +1,5 @@
 package com.example.myjoke.core
 
-interface DataMapper<T> {
-    fun map(id: Int, first: String, second: String, cached: Boolean): T
+interface DataMapper<T, E> {
+    fun map(id: E, first: String, second: String, cached: Boolean): T
 }
