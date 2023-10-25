@@ -8,9 +8,9 @@ data class JokeCloudModel(@SerializedName("id")
                           @SerializedName("setup")
                       private val setup: String,
                           @SerializedName("punchline")
-                      private val punchline: String): Mapper<DataModel> {
+                      private val punchline: String): Mapper<DataModel<Int>> {
 
-    override fun to(): DataModel {
+    override fun to(): DataModel<Int> {
         return DataModel.BaseModel(id, setup, punchline)
     }
 }

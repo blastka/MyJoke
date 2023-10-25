@@ -9,10 +9,10 @@ interface Interactor{
     suspend fun changeStateFavorites(): ItemDomain
 }
 
-class BaseInteractor(
-    private val commonRepository: CommonRepository,
+class BaseInteractor<E>(
+    private val commonRepository: CommonRepository<E>,
     private val domainExceptionHandler: DomainExceptionHandler,
-    private val  mapper: DataMapper<ItemDomain>
+    private val  mapper: DataMapper<ItemDomain, E>
 ) : Interactor {
 
     override suspend fun getItem(): ItemDomain {

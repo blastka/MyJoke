@@ -5,11 +5,12 @@ import com.example.myjoke.core.DispatcherList
 import com.example.myjoke.core.ResourceManager
 import com.example.myjoke.data.CommonRepository
 import com.example.myjoke.data.cache.CachedData
-import com.example.myjoke.data.cache.DataToDomainMapper
+import com.example.myjoke.data.cache.JokeDataToDomainMapper
 import com.example.myjoke.data.cache.JokeCacheDataSource
 import com.example.myjoke.data.cache.JokeRealmToDataMapper
 import com.example.myjoke.data.cache.JokeToRealmMapper
 import com.example.myjoke.data.cache.QuoteCacheDataSource
+import com.example.myjoke.data.cache.QuoteDataToDomainMapper
 import com.example.myjoke.data.cache.QuoteRealmToDataMapper
 import com.example.myjoke.data.cache.QuoteToRealmMapper
 import com.example.myjoke.data.cache.RealmProvider
@@ -31,34 +32,34 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val jokeRetrofitBuilder = RetrofitBuilder.RetrofitQuote().retrofit
+        val quoteRetrofitBuilder = RetrofitBuilder.RetrofitQuote().retrofit
         Realm.init(this)
 
         quoteViewModel = CommonViewModel(
             BaseInteractor(
                 CommonRepository(
                     QuoteCacheDataSource(RealmProvider.Base(), QuoteToRealmMapper(), QuoteRealmToDataMapper()),
-                    QuoteCloudDataSource(jokeRetrofitBuilder.create(QuoteService::class.java)),
+                    QuoteCloudDataSource(quoteRetrofitBuilder.create(QuoteService::class.java)),
                     CachedData.Base()
                 ),
                 DomainExceptionHandler.Base(ResourceManager.Base(this)),
-                DataToDomainMapper()
+                QuoteDataToDomainMapper()
             ),
             Communication.Base(),
             DispatcherList.Base()
         )
 
-        val quoteRetrofitBuilder = RetrofitBuilder.RetrofitJoke().retrofit
+        val jokeRetrofitBuilder = RetrofitBuilder.RetrofitJoke().retrofit
 
         jokeViewModel = CommonViewModel(
             BaseInteractor(
                 CommonRepository(
                     JokeCacheDataSource(RealmProvider.Base(), JokeToRealmMapper(), JokeRealmToDataMapper()),
-                    JokeCloudDataSource(quoteRetrofitBuilder.create(JokeService::class.java)),
+                    JokeCloudDataSource(jokeRetrofitBuilder.create(JokeService::class.java)),
                     CachedData.Base()
                 ),
                 DomainExceptionHandler.Base(ResourceManager.Base(this)),
-                DataToDomainMapper()
+                JokeDataToDomainMapper()
             ),
             Communication.Base(),
             DispatcherList.Base()

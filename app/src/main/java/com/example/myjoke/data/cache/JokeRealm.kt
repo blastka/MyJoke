@@ -12,7 +12,7 @@ open class JokeRealm: RealmObject() {
 
 open class QuoteRealm: RealmObject() {
     @PrimaryKey
-    var id: Int = -1
+    var id: String = ""
     var content: String = ""
     var author: String = ""
 }

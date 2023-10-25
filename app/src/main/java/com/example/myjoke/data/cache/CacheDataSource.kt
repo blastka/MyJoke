@@ -6,21 +6,22 @@ import com.example.myjoke.data.ChangeItemStatus
 import com.example.myjoke.data.DataFetcher
 import com.example.myjoke.data.NoCached
 import com.example.myjoke.data.cloud.DataModel
+import io.realm.Realm
 import io.realm.RealmObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-interface CacheDataSource : ChangeItemStatus, DataFetcher {
+interface CacheDataSource<E> : ChangeItemStatus<E>, DataFetcher<E> {
 
-    abstract class AbstractCacheDataSource<T : RealmObject>(
+    abstract class AbstractCacheDataSource<T : RealmObject, E>(
         private val realm: RealmProvider,
-        private val mapper: DataMapper<T>,
-        private val realmToDataMapper: RealmToDataMapper<T>
-    ) : CacheDataSource {
+        private val mapper: DataMapper<T, E>,
+        private val realmToDataMapper: RealmToDataMapper<T, E>
+    ) : CacheDataSource<E> {
 
         protected abstract val dbClass: Class<T>
 
-        override suspend fun getItem(): DataModel {
+        override suspend fun getItem(): DataModel<E> {
             realm.getRealm().use {
                 val list = it.where(dbClass).findAll()
                 if (list.isEmpty()) {
@@ -31,11 +32,13 @@ interface CacheDataSource : ChangeItemStatus, DataFetcher {
             }
         }
 
-        override suspend fun change(id: Int, dataModel: DataModel): DataModel =
+        protected abstract fun findRealmObject(realm: Realm, id: E): T?
+
+        override suspend fun change(id: E, dataModel: DataModel<E>): DataModel<E> =
             withContext(Dispatchers.IO) {
                 realm.getRealm().use {
                     val itemRealm =
-                        it.where(dbClass).equalTo("id", id).findFirst()
+                        findRealmObject(it, id)
                     return@withContext if (itemRealm == null) {
                         it.executeTransaction { transaction ->
                             val newJoke = dataModel.map(mapper)

@@ -2,11 +2,11 @@ package com.example.myjoke.data.cloud
 
 import com.example.myjoke.data.ChangeItemStatus
 
-interface ChangeItem {
-    suspend fun changeFavorite(changeItemStatus: ChangeItemStatus): DataModel
+interface ChangeItem<E> {
+    suspend fun changeFavorite(changeItemStatus: ChangeItemStatus<E>): DataModel<E>
 
-    class Empty: ChangeItem{
-        override suspend fun changeFavorite(changeItemStatus: ChangeItemStatus): DataModel {
+    class Empty<E>: ChangeItem<E>{
+        override suspend fun changeFavorite(changeItemStatus: ChangeItemStatus<E>): DataModel<E> {
             throw IllegalStateException("empty change joke called")
         }
 
