@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.CheckBox
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myjoke.R
 import com.example.myjoke.presentation.BaseViewModel
 import com.example.myjoke.presentation.State
@@ -44,6 +45,9 @@ class FavoriteDataView : LinearLayout {
         progress = getChildAt(2) as CorrectProgress
         actionButton = getChildAt(3) as CorrectButton
 
+        val recyclerView = getChildAt(4) as RecyclerView
+
+
         context.theme.obtainStyledAttributes(attrs, R.styleable.FavoriteDataView, 0, 0).apply {
             try {
                 val actionButtonText = getString(R.styleable.FavoriteDataView_actionButtonText)
@@ -54,25 +58,9 @@ class FavoriteDataView : LinearLayout {
                 recycle()
             }
         }
+
     }
 
-    fun listenChanges(block: (cached: Boolean) -> Unit) {
-        checkBox.setOnCheckedChangeListener { _, isChecked ->
-            block.invoke(isChecked)
-        }
-    }
-
-    fun handleChangeButton(block: () -> Unit) {
-        imageButton.setOnClickListener {
-            block.invoke()
-        }
-    }
-
-    fun handleActionButton(block: () -> Unit) {
-        actionButton.setOnClickListener {
-            block.invoke()
-        }
-    }
 
     fun show(state: State) {
         state.show(progress, actionButton, textView, imageButton)
