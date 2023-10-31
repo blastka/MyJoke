@@ -7,6 +7,8 @@ import android.widget.CheckBox
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myjoke.R
+import com.example.myjoke.core.CommonDataRecyclerAdapter
+import com.example.myjoke.data.cloud.DataModel
 import com.example.myjoke.presentation.BaseViewModel
 import com.example.myjoke.presentation.State
 
@@ -29,6 +31,7 @@ class FavoriteDataView : LinearLayout {
     private lateinit var imageButton: CorrectImageButton
     private lateinit var actionButton: CorrectButton
     private lateinit var progress: CorrectProgress
+    private lateinit var recyclerView: RecyclerView
 
 
     fun init(attrs: AttributeSet) {
@@ -45,7 +48,7 @@ class FavoriteDataView : LinearLayout {
         progress = getChildAt(2) as CorrectProgress
         actionButton = getChildAt(3) as CorrectButton
 
-        val recyclerView = getChildAt(4) as RecyclerView
+        recyclerView = getChildAt(4) as RecyclerView
 
 
         context.theme.obtainStyledAttributes(attrs, R.styleable.FavoriteDataView, 0, 0).apply {
@@ -59,6 +62,12 @@ class FavoriteDataView : LinearLayout {
             }
         }
 
+    }
+
+    fun fullRecyclerView(){
+        val adapter = CommonDataRecyclerAdapter<Int>()
+        recyclerView.adapter = adapter
+        adapter.show(listOf(DataModel.BaseModel<Int>(0, "Bla bla", "bla bla", true)))
     }
 
 

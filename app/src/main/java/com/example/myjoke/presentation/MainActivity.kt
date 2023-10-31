@@ -29,5 +29,6 @@ class MainActivity : AppCompatActivity() {
             quoteDataView.show(state)
         }
 
+        quoteDataView.fullRecyclerView() //todo test
     }
 }

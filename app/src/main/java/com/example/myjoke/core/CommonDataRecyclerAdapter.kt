@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myjoke.R
+import com.example.myjoke.data.cloud.DataModel
+import com.example.myjoke.presentation.views.CorrectTextView
 
 class CommonDataRecyclerAdapter<E>():
     RecyclerView.Adapter<CommonDataRecyclerAdapter<E>.CommonViewHolder<E>>() {
@@ -16,20 +18,30 @@ class CommonDataRecyclerAdapter<E>():
         return CommonViewHolder(view)
     }
 
+    private val list: ArrayList<DataModel<E>> = ArrayList()
 
     override fun onBindViewHolder(
         holder: CommonDataRecyclerAdapter<E>.CommonViewHolder<E>,
         position: Int
     ) {
-        TODO("Not yet implemented")
+        holder.bind(list[position])
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return list.size
+    }
+
+    fun show(data:List<DataModel<E>>){
+        list.clear()
+        list.addAll(data)
+        notifyDataSetChanged() //todo устарело
     }
 
     inner class CommonViewHolder<E>(view: View): RecyclerView.ViewHolder(view) {
-
+        private val textView = itemView.findViewById<CorrectTextView>(R.id.textView)
+        fun bind(data: DataModel<E>){
+            data.map(textView)
+        }
     }
 }
 
