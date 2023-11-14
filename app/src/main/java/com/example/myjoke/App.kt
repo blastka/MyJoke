@@ -5,8 +5,8 @@ import com.example.myjoke.core.DispatcherList
 import com.example.myjoke.core.ResourceManager
 import com.example.myjoke.data.CommonRepository
 import com.example.myjoke.data.cache.CachedData
-import com.example.myjoke.data.cache.JokeDataToDomainMapper
 import com.example.myjoke.data.cache.JokeCacheDataSource
+import com.example.myjoke.data.cache.JokeDataToDomainMapper
 import com.example.myjoke.data.cache.JokeRealmToDataMapper
 import com.example.myjoke.data.cache.JokeToRealmMapper
 import com.example.myjoke.data.cache.QuoteCacheDataSource
@@ -46,6 +46,7 @@ class App : Application() {
                 QuoteDataToDomainMapper()
             ),
             Communication.Base(),
+            Communication.BaseList(),
             DispatcherList.Base()
         )
 
@@ -62,6 +63,7 @@ class App : Application() {
                 JokeDataToDomainMapper()
             ),
             Communication.Base(),
+            Communication.BaseList(),
             DispatcherList.Base()
         )
     }

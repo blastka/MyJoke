@@ -15,9 +15,12 @@ abstract class UiState(private val setup: String, private val punchline: String)
 
     protected fun getData() = State.Initial(getString(), getIconId())
 
-    fun show(communication: Communication<State>){
+
+    open fun show(communication: Communication<State>){
         communication.postValue(getData())
     }
+
+    fun show(showText: ShowText) = showText.show(getString())
 
     class FavoriteState(setup: String, punchline: String): UiState(setup, punchline){
         override fun getIconId(): Int {

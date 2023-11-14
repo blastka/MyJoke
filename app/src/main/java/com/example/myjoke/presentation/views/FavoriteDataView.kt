@@ -8,9 +8,9 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myjoke.R
 import com.example.myjoke.core.CommonDataRecyclerAdapter
-import com.example.myjoke.data.cloud.DataModel
 import com.example.myjoke.presentation.BaseViewModel
 import com.example.myjoke.presentation.State
+import com.example.myjoke.presentation.UiState
 
 class FavoriteDataView : LinearLayout {
     constructor(context: Context) : super(context)
@@ -32,7 +32,8 @@ class FavoriteDataView : LinearLayout {
     private lateinit var actionButton: CorrectButton
     private lateinit var progress: CorrectProgress
     private lateinit var recyclerView: RecyclerView
-
+    private lateinit var viewModel: BaseViewModel
+    private lateinit var adapter: CommonDataRecyclerAdapter<List<UiState>>
 
     fun init(attrs: AttributeSet) {
         orientation = VERTICAL
@@ -62,12 +63,8 @@ class FavoriteDataView : LinearLayout {
             }
         }
 
-    }
-
-    fun fullRecyclerView(){
-        val adapter = CommonDataRecyclerAdapter<Int>()
+        adapter = CommonDataRecyclerAdapter()
         recyclerView.adapter = adapter
-        adapter.show(listOf(DataModel.BaseModel<Int>(0, "Bla bla", "bla bla", true)))
     }
 
 
@@ -75,7 +72,12 @@ class FavoriteDataView : LinearLayout {
         state.show(progress, actionButton, textView, imageButton)
     }
 
+    fun show(data: List<UiState>) {
+        adapter.show(data)
+    }
+
     fun linkWith(viewModel: BaseViewModel){
+        this.viewModel = viewModel
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             viewModel.changeCachedStatus(isChecked)
         }
@@ -83,8 +85,7 @@ class FavoriteDataView : LinearLayout {
             viewModel.changeStateFavorites()
         }
         actionButton.setOnClickListener {
-            viewModel.joke()
+            viewModel.getItem()
         }
-
     }
 }

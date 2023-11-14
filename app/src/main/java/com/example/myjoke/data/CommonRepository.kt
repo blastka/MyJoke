@@ -25,6 +25,10 @@ class CommonRepository<E>(
         }
     }
 
+    override suspend fun getDataList(): List<DataModel<E>> {
+        return cacheDataSource.getDataList()
+    }
+
     override fun changeCachedStatus(cached: Boolean) {
         currentDataSource = if (cached)
             cacheDataSource
@@ -39,6 +43,8 @@ class CommonRepository<E>(
 
 interface Repository<E>{
     suspend fun getData(): DataModel<E>
+    suspend fun getDataList(): List<DataModel<E>>
     fun changeCachedStatus(cached: Boolean)
     suspend fun changeStateFavorites(): DataModel<E>
+
 }

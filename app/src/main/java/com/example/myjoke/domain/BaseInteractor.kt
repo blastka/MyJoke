@@ -1,10 +1,11 @@
 package com.example.myjoke.domain
 
-import com.example.myjoke.data.CommonRepository
 import com.example.myjoke.core.DataMapper
+import com.example.myjoke.data.CommonRepository
 
 interface Interactor{
     suspend fun getItem(): ItemDomain
+    suspend fun getItemList(): List<ItemDomain>
     fun changeCachedStatus(cached: Boolean)
     suspend fun changeStateFavorites(): ItemDomain
 }
@@ -20,6 +21,16 @@ class BaseInteractor<E>(
             commonRepository.getData().map(mapper)
         } catch (e: Exception) {
             ItemDomain.Fail(domainExceptionHandler.handle(e))
+        }
+    }
+
+    override suspend fun getItemList(): List<ItemDomain> {
+        return try {
+            commonRepository.getDataList().map {
+                it.map(mapper)
+            }
+        } catch (e: Exception) {
+            listOf(ItemDomain.Fail(domainExceptionHandler.handle(e)))
         }
     }
 

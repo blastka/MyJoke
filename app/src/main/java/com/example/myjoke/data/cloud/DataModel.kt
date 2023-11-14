@@ -1,14 +1,13 @@
 package com.example.myjoke.data.cloud
 
-import com.example.myjoke.data.ChangeItemStatus
 import com.example.myjoke.core.DataMapper
+import com.example.myjoke.data.ChangeItemStatus
 import com.example.myjoke.presentation.ShowText
 
 interface DataModel<E> : ChangeItem<E> {
 
     fun <T> map(mapper: DataMapper<T, E>): T
     fun toChangeJokeData(cached: Boolean): DataModel<E>
-    fun map(showText: ShowText)
 
     class BaseModel<E>(
         private val id: E,
@@ -28,8 +27,5 @@ interface DataModel<E> : ChangeItem<E> {
         override fun toChangeJokeData(cached: Boolean): DataModel<E> {
             return BaseModel(id, first, second, cached)
         }
-
-        override fun map(showText: ShowText) =
-            showText.show(first) //todo чет непонятное в data слое идет работа с UI не порядок
     }
 }

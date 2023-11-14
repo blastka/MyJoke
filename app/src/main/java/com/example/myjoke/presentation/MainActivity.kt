@@ -21,6 +21,12 @@ class MainActivity : AppCompatActivity() {
             favoriteDataView.show(state)
         }
 
+        jokeViewModel.observeList(this) { state ->
+            favoriteDataView.show(state)
+        }
+
+        jokeViewModel.getItemList()
+
         val quoteViewModel = (application as App).quoteViewModel
         val quoteDataView = findViewById<FavoriteDataView>(R.id.quoteFavouriteView)
         quoteDataView.linkWith(quoteViewModel)
@@ -29,6 +35,9 @@ class MainActivity : AppCompatActivity() {
             quoteDataView.show(state)
         }
 
-        quoteDataView.fullRecyclerView() //todo test
+        quoteViewModel.observeList(this) { state ->
+            favoriteDataView.show(state)
+        }
+        quoteViewModel.getItemList()
     }
 }
