@@ -26,7 +26,7 @@ interface CacheDataSource<E> : ChangeItemStatus<E>, DataFetcher<E> {
 
 
         override suspend fun getItem(): DataModel<E> {
-            return realmToDataMapper.map(getRealmData().random())
+            return getRealmData { realmToDataMapper.map(it.random())}
         }
 
         protected abstract fun findRealmObject(realm: Realm, id: E): T?
@@ -52,18 +52,18 @@ interface CacheDataSource<E> : ChangeItemStatus<E>, DataFetcher<E> {
             }
 
         override suspend fun getDataList(): List<DataModel<E>> {
-            return getRealmData().map {
-                realmToDataMapper.map(it)
+            return getRealmData { results ->
+                results.map {  realmToDataMapper.map(it)}
             }
         }
 
-        private fun getRealmData(): RealmResults<T> {
+        private fun <R> getRealmData(block: (list : RealmResults<T>) -> R) : R {
             realm.getRealm().use {
                 val list = it.where(dbClass).findAll()
                 if (list.isEmpty()) {
                     throw NoCached()
                 } else {
-                    return list
+                    return block.invoke(list)
                 }
             }
         }
